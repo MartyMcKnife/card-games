@@ -1,38 +1,35 @@
-import * as React from "react"
-import {
-  ChakraProvider,
-  Box,
-  Text,
-  Link,
-  VStack,
-  Code,
-  Grid,
-  theme,
-} from "@chakra-ui/react"
-import { ColorModeSwitcher } from "./ColorModeSwitcher"
-import { Logo } from "./Logo"
+import * as React from "react";
+import { Flex, Box, Heading, SimpleGrid } from "@chakra-ui/react";
+import BoxItem from "./Components/BoxItem";
+import CardPile from "./imgs/cardpile.png";
+import Settings from "./imgs/settings.png";
 
 export const App = () => (
-  <ChakraProvider theme={theme}>
-    <Box textAlign="center" fontSize="xl">
-      <Grid minH="100vh" p={3}>
-        <ColorModeSwitcher justifySelf="flex-end" />
-        <VStack spacing={8}>
-          <Logo h="40vmin" pointerEvents="none" />
-          <Text>
-            Edit <Code fontSize="xl">src/App.tsx</Code> and save to reload.
-          </Text>
-          <Link
-            color="teal.500"
-            href="https://chakra-ui.com"
-            fontSize="2xl"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn Chakra
-          </Link>
-        </VStack>
-      </Grid>
-    </Box>
-  </ChakraProvider>
-)
+  <Box bgColor="gray.50" height="screen-h">
+    <Flex justify="center" alignItems="center" height="full">
+      <Box shadow="lg" alignItems="center" padding="8" rounded="lg">
+        <Heading borderBottom="2px" padding={1}>
+          Welcome Steve!
+        </Heading>
+        <SimpleGrid
+          columns={2}
+          spacing={10}
+          marginTop="4"
+          marginX="auto"
+          width="full"
+        >
+          <BoxItem
+            name="Card Games!"
+            description="Chose and start a game here!"
+            icon={CardPile}
+          />
+          <BoxItem
+            name="Settings"
+            description="Change your username, email and more!"
+            icon={Settings}
+          />
+        </SimpleGrid>
+      </Box>
+    </Flex>
+  </Box>
+);
