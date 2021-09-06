@@ -1,35 +1,29 @@
 import * as React from "react";
-import { Flex, Box, Heading, SimpleGrid } from "@chakra-ui/react";
-import BoxItem from "./Components/BoxItem";
-import CardPile from "./imgs/cardpile.png";
-import Settings from "./imgs/settings.png";
+import { BrowserRouter, Switch, Route } from "react-router-dom";
+import GamePicker from "./Components/Pages/Games/GamePicker";
+import Settings from "./Components/Pages/Settings";
+import Tokens from "./Components/Pages/Tokens";
+import Landing from "./Components/Landing";
+import Register from "./Components/Auth/Register";
 
 export const App = () => (
-  <Box bgColor="gray.50" height="screen-h">
-    <Flex justify="center" alignItems="center" height="full">
-      <Box shadow="lg" alignItems="center" padding="8" rounded="lg">
-        <Heading borderBottom="2px" padding={1}>
-          Welcome Steve!
-        </Heading>
-        <SimpleGrid
-          columns={2}
-          spacing={10}
-          marginTop="4"
-          marginX="auto"
-          width="full"
-        >
-          <BoxItem
-            name="Card Games!"
-            description="Chose and start a game here!"
-            icon={CardPile}
-          />
-          <BoxItem
-            name="Settings"
-            description="Change your username, email and more!"
-            icon={Settings}
-          />
-        </SimpleGrid>
-      </Box>
-    </Flex>
-  </Box>
+  <BrowserRouter>
+    <Switch>
+      <Route path="/" exact>
+        <Landing />
+      </Route>
+      <Route path="/signup" exact>
+        <Register />
+      </Route>
+      <Route path="/cardgames" exact>
+        <GamePicker />
+      </Route>
+      <Route path="/tokens" exact>
+        <Tokens />
+      </Route>
+      <Route path="/settings" exact>
+        <Settings />
+      </Route>
+    </Switch>
+  </BrowserRouter>
 );
