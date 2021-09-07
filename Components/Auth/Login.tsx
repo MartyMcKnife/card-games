@@ -11,6 +11,7 @@ import {
   Flex,
   Link,
   Divider,
+  SimpleGrid,
 } from "@chakra-ui/react";
 import React, { ReactElement, useState } from "react";
 import Hero from "../Helpers/Hero";
@@ -19,6 +20,9 @@ import { auth } from "../../utils/firebase/firebase-config";
 import { signInWithEmailAndPassword } from "@firebase/auth";
 import { FirebaseError } from "@firebase/util";
 import { useRouter } from "next/router";
+import ProviderLogin from "./ProviderLogin";
+import DividerWithText from "../DividerWithText";
+import { getError } from "../../utils/firebase/authentication";
 
 export default function Login(): ReactElement {
   const [email, setEmail] = useState<string>();
@@ -41,26 +45,7 @@ export default function Login(): ReactElement {
       }
     } catch (err: any) {
       const error: FirebaseError = err;
-      switch (error.code) {
-        case "auth/invalid-email":
-          setError({ message: "Invalid email!" });
-          break;
-        case "auth/operation-not-allowed":
-          setError({ message: "Unexpected error!" });
-          break;
-        case "auth/weak-password":
-          setError({ message: "Weak password!" });
-          break;
-        case "auth/user-not-found":
-          setError({ message: "User not found!" });
-          break;
-        case "auth/wrong-password":
-          setError({ message: "Incorrect username or password!" });
-          break;
-        default:
-          setError({ message: error.message });
-          break;
-      }
+      setError({ message: getError(error.code) });
       setLoading(false);
     }
   };
@@ -68,11 +53,11 @@ export default function Login(): ReactElement {
     <Hero>
       <Heading fontSize="4xl">Login</Heading>
       <FormControl paddingX="2" marginTop="4">
-        <Flex width="full" justifyContent="center" alignItems="center">
-          <Divider />
-          <Text marginX="2">Or</Text>
-          <Divider />
-        </Flex>
+        <SimpleGrid width="full" columns={2} spacing="3" my="4">
+          <ProviderLogin setError={setError} provider="google" />
+          <ProviderLogin setError={setError} provider="github" />
+        </SimpleGrid>
+        <DividerWithText>Or</DividerWithText>
         <FormLabel>Email Address</FormLabel>
         <InputGroup>
           <InputLeftElement

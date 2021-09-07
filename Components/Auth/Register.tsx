@@ -20,6 +20,7 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { User } from "../../interfaces/app";
 import { createUser } from "../../utils/firebase/firestore";
 import { FirebaseError } from "@firebase/util";
+import { getError } from "../../utils/firebase/authentication";
 
 export default function Register(): ReactElement {
   const [email, setEmail] = useState<string>();
@@ -70,23 +71,7 @@ export default function Register(): ReactElement {
       router.push("/");
     } catch (err: any) {
       const error: FirebaseError = err;
-      switch (error.code) {
-        case "auth/email-already-in-use":
-          setError({ message: "Email already in use!" });
-          break;
-        case "auth/invalid-email":
-          setError({ message: "Invalid email!" });
-          break;
-        case "auth/operation-not-allowed":
-          setError({ message: "Unexpected error!" });
-          break;
-        case "auth/weak-password":
-          setError({ message: "Weak password!" });
-          break;
-        default:
-          setError({ message: error.message });
-          break;
-      }
+      setError({ message: getError(error.code) });
 
       setLoading(false);
     }
