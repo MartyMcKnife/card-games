@@ -10,69 +10,38 @@ import {
   Button,
   Flex,
   Link,
+  Divider,
 } from "@chakra-ui/react";
 import React, { ReactElement, useState } from "react";
 import Hero from "../Helpers/Hero";
-import { BiEnvelope, BiHide, BiLock, BiShow, BiUser } from "react-icons/bi";
+import { BiEnvelope, BiHide, BiLock, BiShow } from "react-icons/bi";
 import { auth } from "../../utils/firebase/firebase-config";
-import { useHistory } from "react-router-dom";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { User } from "../../interfaces/app";
-import { createUser } from "../../utils/firebase/firestore";
+import { signInWithEmailAndPassword } from "@firebase/auth";
+import { FirebaseError } from "@firebase/util";
+import { useRouter } from "next/router";
 
-export default function Register(): ReactElement {
+export default function Login(): ReactElement {
   const [email, setEmail] = useState<string>();
   const [password, setPassword] = useState<string>();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<{ code?: number; message: string }>();
-  const [username, setUsername] = useState<string>();
-  const history = useHistory();
+  const router = useRouter();
 
   const handleLogin = async () => {
     setLoading(true);
     try {
-      if (!email) {
-        setError({ message: "Email is required!" });
+      if (!email || !password) {
+        setError({ message: "Email and Password is required!" });
         setLoading(false);
         return;
+      } else {
+        await signInWithEmailAndPassword(auth, email, password);
+        router.push("/");
       }
-      if (!password) {
-        setError({ message: "Password is required!" });
-        setLoading(false);
-        return;
-      }
-      if (!username) {
-        setError({ message: "Username is required!" });
-        setLoading(false);
-        return;
-      }
-      const { user } = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      const newUser: User = {
-        userID: user.uid,
-        email: email,
-        userName: username,
-        balance: {
-          "1000": 0,
-          "500": 0,
-          "100": 1,
-          "50": 5,
-          "25": 10,
-          "5": 15,
-          "1": 10,
-        },
-      };
-      await createUser(newUser);
-      history.push("/");
-    } catch (error) {
+    } catch (err: any) {
+      const error: FirebaseError = err;
       switch (error.code) {
-        case "auth/email-already-in-use":
-          setError({ message: "Email already in use!" });
-          break;
         case "auth/invalid-email":
           setError({ message: "Invalid email!" });
           break;
@@ -82,40 +51,29 @@ export default function Register(): ReactElement {
         case "auth/weak-password":
           setError({ message: "Weak password!" });
           break;
+        case "auth/user-not-found":
+          setError({ message: "User not found!" });
+          break;
+        case "auth/wrong-password":
+          setError({ message: "Incorrect username or password!" });
+          break;
         default:
           setError({ message: error.message });
           break;
       }
-
       setLoading(false);
     }
   };
   return (
     <Hero>
-      <Heading fontSize="4xl">Register</Heading>
+      <Heading fontSize="4xl">Login</Heading>
       <FormControl paddingX="2" marginTop="4">
-        <FormLabel fontWeight="medium" fontSize="sm">
-          Username
-        </FormLabel>
-        <InputGroup>
-          <InputLeftElement
-            pointerEvents="none"
-            children={<BiUser color="gray" size="20" />}
-          />
-          <Input
-            placeholder="Gameing123"
-            type="text"
-            onChange={(e) => {
-              setUsername(e.target.value);
-            }}
-            value={username}
-            width={96}
-            required
-          />
-        </InputGroup>
-        <FormLabel fontWeight="medium" fontSize="sm" marginTop="4">
-          Email Address
-        </FormLabel>
+        <Flex width="full" justifyContent="center" alignItems="center">
+          <Divider />
+          <Text marginX="2">Or</Text>
+          <Divider />
+        </Flex>
+        <FormLabel>Email Address</FormLabel>
         <InputGroup>
           <InputLeftElement
             pointerEvents="none"
@@ -129,12 +87,9 @@ export default function Register(): ReactElement {
             }}
             value={email}
             width={96}
-            required
           />
         </InputGroup>
-        <FormLabel marginTop="4" fontWeight="medium" fontSize="sm">
-          Password
-        </FormLabel>
+        <FormLabel marginTop="4">Password</FormLabel>
         <InputGroup>
           <InputLeftElement
             pointerEvents="none"
@@ -148,7 +103,6 @@ export default function Register(): ReactElement {
             }}
             value={password}
             width={96}
-            required
           />
           <InputRightElement
             children={
@@ -162,13 +116,13 @@ export default function Register(): ReactElement {
             cursor="pointer"
           />
         </InputGroup>
-
         <Text fontSize="xs" marginTop="2">
-          Have an account?{" "}
-          <Link href="/" textColor="blue.600">
-            Sign in now!
+          Don't have an account?{" "}
+          <Link href="/signup" textColor="blue.600">
+            Signup now!
           </Link>
         </Text>
+
         {error && (
           <Text textColor="red.600" fontSize="sm" mt="2">
             {error.message} {error.code && `Code: ${error.code}`}
@@ -177,11 +131,12 @@ export default function Register(): ReactElement {
         <Flex justifyContent="flex-end" width="full" marginTop="3">
           <Button
             colorScheme="blue"
-            loadingText="Signing up..."
+            loadingText="Logging in..."
             isLoading={loading}
             onClick={handleLogin}
+            type="submit"
           >
-            Sign up!
+            Login!
           </Button>
         </Flex>
       </FormControl>

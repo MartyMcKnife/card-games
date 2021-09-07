@@ -1,26 +1,34 @@
-import React, { ReactElement } from "react";
+import React, { ReactElement, useState, useEffect } from "react";
+import { User } from "../interfaces/app";
 import { Flex, Heading } from "@chakra-ui/react";
 import BoxItem from "./BoxItem";
-import CardPile from "../imgs/cardpile.png";
-import SettingsIcon from "../imgs/settings.png";
-import Chips from "../imgs/chips.png";
 import Hero from "./Helpers/Hero";
 
 interface Props {
-  name?: string;
-  balance?: number;
+  user: User;
 }
 
-export default function Selector({ name, balance }: Props): ReactElement {
+export default function Landing({ user }: Props): ReactElement {
+  const [totalBalance, setotalBalance] = useState<number>();
+  useEffect(() => {
+    let total = 0;
+    const balance = user.balance;
+    for (const value in balance) {
+      const chips: number = balance[value];
+      total += parseInt(value) * chips;
+    }
+    setotalBalance(total);
+  }, [user.balance]);
+
   return (
     <Hero>
       <Flex alignItems="center" justifyContent="space-between">
         <Heading borderBottom="2px" padding={1} marginRight="8">
-          Welcome, {name || "Undefined"}!
+          Welcome, {user.userName || "Undefined"}!
         </Heading>
 
         <Heading fontSize="xl" fontWeight="medium">
-          Current Balance: <u>${balance || 0}</u>
+          Current Balance: <u>${totalBalance || 0}</u>
         </Heading>
       </Flex>
 
@@ -33,19 +41,19 @@ export default function Selector({ name, balance }: Props): ReactElement {
         <BoxItem
           name="Card Games!"
           description="Chose and start a game here!"
-          icon={CardPile}
+          icon="/imgs/cardpile.png"
           linkurl="/cardgames"
         />
         <BoxItem
           name="Tokens"
           description="Fill up your balance!"
-          icon={Chips}
+          icon="/imgs/chips.png"
           linkurl="/tokens"
         />
         <BoxItem
           name="Settings"
           description="Change your username, email and more!"
-          icon={SettingsIcon}
+          icon="/imgs/settings.png"
           linkurl="/settings"
         />
       </Flex>
