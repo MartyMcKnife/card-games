@@ -4,7 +4,7 @@ import {
   InputGroup,
   InputLeftElement,
   Input,
-  FormControl,
+  Box,
   FormLabel,
   InputRightElement,
   Button,
@@ -79,98 +79,100 @@ export default function Register(): ReactElement {
   return (
     <Hero>
       <Heading fontSize="4xl">Register</Heading>
-      <FormControl paddingX="2" marginTop="4">
-        <FormLabel fontWeight="medium" fontSize="sm">
-          Username
-        </FormLabel>
-        <InputGroup>
-          <InputLeftElement
-            pointerEvents="none"
-            children={<BiUser color="gray" size="20" />}
-          />
-          <Input
-            placeholder="Gameing123"
-            type="text"
-            onChange={(e) => {
-              setUsername(e.target.value);
-            }}
-            value={username}
-            width={96}
-            required
-          />
-        </InputGroup>
-        <FormLabel fontWeight="medium" fontSize="sm" marginTop="4">
-          Email Address
-        </FormLabel>
-        <InputGroup>
-          <InputLeftElement
-            pointerEvents="none"
-            children={<BiEnvelope color="gray" />}
-          />
-          <Input
-            placeholder="john@example.com"
-            type="email"
-            onChange={(e) => {
-              setEmail(e.target.value);
-            }}
-            value={email}
-            width={96}
-            required
-          />
-        </InputGroup>
-        <FormLabel marginTop="4" fontWeight="medium" fontSize="sm">
-          Password
-        </FormLabel>
-        <InputGroup>
-          <InputLeftElement
-            pointerEvents="none"
-            children={<BiLock color="gray" size="20" />}
-          />
-          <Input
-            placeholder="•••••"
-            type={showPassword ? "text" : "password"}
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
-            value={password}
-            width={96}
-            required
-          />
-          <InputRightElement
-            children={
-              showPassword ? (
-                <BiShow color="gray" size="20" />
-              ) : (
-                <BiHide color="gray" size="20" />
-              )
-            }
-            onClick={() => setShowPassword(!showPassword)}
-            cursor="pointer"
-          />
-        </InputGroup>
+      <Box paddingX="2" marginTop="4">
+        <form>
+          <FormLabel fontWeight="medium" fontSize="sm">
+            Username
+          </FormLabel>
+          <InputGroup>
+            <InputLeftElement
+              pointerEvents="none"
+              children={<BiUser color="gray" size="20" />}
+            />
+            <Input
+              placeholder="Gameing123"
+              type="text"
+              onChange={(e) => {
+                setUsername(e.target.value);
+              }}
+              value={username}
+              width={96}
+              required
+            />
+          </InputGroup>
+          <FormLabel fontWeight="medium" fontSize="sm" marginTop="4">
+            Email Address
+          </FormLabel>
+          <InputGroup>
+            <InputLeftElement
+              pointerEvents="none"
+              children={<BiEnvelope color="gray" />}
+            />
+            <Input
+              placeholder="john@example.com"
+              type="email"
+              onChange={(e) => {
+                setEmail(e.target.value);
+              }}
+              value={email}
+              width={96}
+              required
+            />
+          </InputGroup>
+          <FormLabel marginTop="4" fontWeight="medium" fontSize="sm">
+            Password
+          </FormLabel>
+          <InputGroup>
+            <InputLeftElement
+              pointerEvents="none"
+              children={<BiLock color="gray" size="20" />}
+            />
+            <Input
+              placeholder="•••••"
+              type={showPassword ? "text" : "password"}
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
+              value={password}
+              width={96}
+              required
+            />
+            <InputRightElement
+              children={
+                showPassword ? (
+                  <BiShow color="gray" size="20" />
+                ) : (
+                  <BiHide color="gray" size="20" />
+                )
+              }
+              onClick={() => setShowPassword(!showPassword)}
+              cursor="pointer"
+            />
+          </InputGroup>
 
-        <Text fontSize="xs" marginTop="2">
-          Have an account?{" "}
-          <Link href="/signin" textColor="blue.600">
-            Sign in now!
-          </Link>
-        </Text>
-        {error && (
-          <Text textColor="red.600" fontSize="sm" mt="2">
-            {error.message} {error.code && `Code: ${error.code}`}
+          <Text fontSize="xs" marginTop="2">
+            Have an account?{" "}
+            <Link href="/signin" textColor="blue.600">
+              Sign in now!
+            </Link>
           </Text>
-        )}
-        <Flex justifyContent="flex-end" width="full" marginTop="3">
-          <Button
-            colorScheme="blue"
-            loadingText="Signing up..."
-            isLoading={loading}
-            onClick={handleLogin}
-          >
-            Sign up!
-          </Button>
-        </Flex>
-      </FormControl>
+          {error && (
+            <Text textColor="red.600" fontSize="sm" mt="2">
+              {error.message} {error.code && `Code: ${error.code}`}
+            </Text>
+          )}
+          <Flex justifyContent="flex-end" width="full" marginTop="3">
+            <Button
+              colorScheme="blue"
+              loadingText="Signing up..."
+              isLoading={loading}
+              onClick={handleLogin}
+            >
+              Sign up!
+            </Button>
+          </Flex>
+        </form>
+      </Box>
     </Hero>
   );
 }

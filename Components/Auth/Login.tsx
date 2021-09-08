@@ -4,13 +4,12 @@ import {
   InputGroup,
   InputLeftElement,
   Input,
-  FormControl,
+  Flex,
   FormLabel,
   InputRightElement,
   Button,
-  Flex,
+  Box,
   Link,
-  Divider,
   SimpleGrid,
 } from "@chakra-ui/react";
 import React, { ReactElement, useState } from "react";
@@ -52,79 +51,82 @@ export default function Login(): ReactElement {
   return (
     <Hero>
       <Heading fontSize="4xl">Login</Heading>
-      <FormControl paddingX="2" marginTop="4">
-        <SimpleGrid width="full" columns={2} spacing="3" my="4">
-          <ProviderLogin setError={setError} provider="google" />
-          <ProviderLogin setError={setError} provider="github" />
-        </SimpleGrid>
-        <DividerWithText>Or</DividerWithText>
-        <FormLabel>Email Address</FormLabel>
-        <InputGroup>
-          <InputLeftElement
-            pointerEvents="none"
-            children={<BiEnvelope color="gray" />}
-          />
-          <Input
-            placeholder="john@example.com"
-            type="email"
-            onChange={(e) => {
-              setEmail(e.target.value);
-            }}
-            value={email}
-            width={96}
-          />
-        </InputGroup>
-        <FormLabel marginTop="4">Password</FormLabel>
-        <InputGroup>
-          <InputLeftElement
-            pointerEvents="none"
-            children={<BiLock color="gray" size="20" />}
-          />
-          <Input
-            placeholder="•••••"
-            type={showPassword ? "text" : "password"}
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
-            value={password}
-            width={96}
-          />
-          <InputRightElement
-            children={
-              showPassword ? (
-                <BiShow color="gray" size="20" />
-              ) : (
-                <BiHide color="gray" size="20" />
-              )
-            }
-            onClick={() => setShowPassword(!showPassword)}
-            cursor="pointer"
-          />
-        </InputGroup>
-        <Text fontSize="xs" marginTop="2">
-          Don't have an account?{" "}
-          <Link href="/signup" textColor="blue.600">
-            Signup now!
-          </Link>
-        </Text>
-
-        {error && (
-          <Text textColor="red.600" fontSize="sm" mt="2">
-            {error.message} {error.code && `Code: ${error.code}`}
+      <Box paddingX="2" marginTop="4">
+        <form>
+          <SimpleGrid width="full" columns={2} spacing="3" my="4">
+            <ProviderLogin setError={setError} provider="google" />
+            <ProviderLogin setError={setError} provider="github" />
+          </SimpleGrid>
+          <DividerWithText>Or</DividerWithText>
+          <FormLabel>Email Address</FormLabel>
+          <InputGroup>
+            <InputLeftElement
+              pointerEvents="none"
+              children={<BiEnvelope color="gray" />}
+            />
+            <Input
+              placeholder="john@example.com"
+              type="email"
+              onChange={(e) => {
+                setEmail(e.target.value);
+              }}
+              value={email}
+              width={96}
+            />
+          </InputGroup>
+          <FormLabel marginTop="4">Password</FormLabel>
+          <InputGroup>
+            <InputLeftElement
+              pointerEvents="none"
+              children={<BiLock color="gray" size="20" />}
+            />
+            <Input
+              placeholder="•••••"
+              type={showPassword ? "text" : "password"}
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
+              value={password}
+              width={96}
+            />
+            <InputRightElement
+              children={
+                showPassword ? (
+                  <BiShow color="gray" size="20" />
+                ) : (
+                  <BiHide color="gray" size="20" />
+                )
+              }
+              onClick={() => setShowPassword(!showPassword)}
+              cursor="pointer"
+            />
+          </InputGroup>
+          <Text fontSize="xs" marginTop="2">
+            Don't have an account?{" "}
+            <Link href="/signup" textColor="blue.600">
+              Signup now!
+            </Link>
           </Text>
-        )}
-        <Flex justifyContent="flex-end" width="full" marginTop="3">
-          <Button
-            colorScheme="blue"
-            loadingText="Logging in..."
-            isLoading={loading}
-            onClick={handleLogin}
-            type="submit"
-          >
-            Login!
-          </Button>
-        </Flex>
-      </FormControl>
+
+          {error && (
+            <Text textColor="red.600" fontSize="sm" mt="2">
+              {error.message} {error.code && `Code: ${error.code}`}
+            </Text>
+          )}
+          <Flex justifyContent="flex-end">
+            <Button
+              colorScheme="blue"
+              loadingText="Logging in..."
+              isLoading={loading}
+              onClick={handleLogin}
+              type="submit"
+              marginTop="4"
+            >
+              Login!
+            </Button>
+          </Flex>
+        </form>
+      </Box>
     </Hero>
   );
 }

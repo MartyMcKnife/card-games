@@ -1,25 +1,13 @@
-import React, { useState, useEffect, ReactElement } from "react";
-import { useRouter } from "next/dist/client/router";
+import React, { ReactElement } from "react";
+import FullPageLoading from "../Components/Helpers/FullPageLoading";
 import Landing from "../Components/Landing";
-import { onAuthStateChanged } from "@firebase/auth";
-import { getUser } from "../utils/firebase/firestore";
-import { auth } from "../utils/firebase/firebase-config";
-import { User } from "../interfaces/app";
-export default function Index(): ReactElement {
-  const [user, setUser] = useState<User>();
-  const router = useRouter();
+import { useAuth } from "../utils/hooks";
 
-  onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      const userObj = await getUser(user.uid);
-      if (userObj) {
-        setUser(userObj);
-      } else {
-        router.push("/signin");
-      }
-    } else {
-      router.push("/signin");
-    }
-  });
-  return <>{user && <Landing user={user} />}</>;
+export default function Index(): ReactElement {
+  const { loading, user } = useAuth();
+  if (!loading) {
+    return <Landing user={user} />;
+  } else {
+    return <FullPageLoading />;
+  }
 }

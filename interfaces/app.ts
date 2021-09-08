@@ -6,11 +6,11 @@ export interface User {
 }
 
 export interface Balance {
-  "1000": number;
-  "500": number;
-  "100": number;
-  "50": number;
-  "25": number;
-  "5": number;
-  "1": number;
+  "1000"?: number;
+  "500"?: number;
+  "100"?: number;
+  "50"?: number;
+  "25"?: number;
+  "5"?: number;
+  "1"?: number;
 }
