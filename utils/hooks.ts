@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { onAuthStateChanged } from "@firebase/auth";
 import { getUser } from "./firebase/firestore";
 import { auth } from "./firebase/firebase-config";
+import { text as loadingText } from "./loadingtext";
 
 export const useAuth = () => {
   const [loading, setLoading] = useState(true);
@@ -26,4 +27,22 @@ export const useAuth = () => {
   }, [auth]);
 
   return { loading, user, setLoading };
+};
+
+export const useLoadingText = () => {
+  const [text, setText] = useState<string>();
+
+  useEffect(() => {
+    const updateText = () => {
+      const randomIndex = Math.round(Math.random() * loadingText.length);
+      setText(loadingText[randomIndex]);
+    };
+    updateText();
+    const interval = setInterval(updateText, 2000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+  return text;
 };

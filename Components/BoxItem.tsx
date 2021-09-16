@@ -25,6 +25,7 @@ export default function BoxItem({
               maxHeight="16"
               marginX="auto"
               objectFit="cover"
+              rounded="lg"
             />
             <Text fontWeight="bold" paddingTop="2">
               {name}
