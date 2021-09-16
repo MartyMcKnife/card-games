@@ -49,7 +49,7 @@ export default function Google({ setError, provider }: Props): ReactElement {
                 "500": 0,
                 "100": 1,
                 "50": 5,
-                "25": 10,
+                "20": 10,
                 "5": 15,
                 "1": 10,
               },
