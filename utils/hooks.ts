@@ -5,6 +5,7 @@ import { onAuthStateChanged } from "@firebase/auth";
 import { getUser } from "./firebase/firestore";
 import { auth } from "./firebase/firebase-config";
 import { text as loadingText } from "./loadingtext";
+import router from "next/router";
 
 export const useAuth = () => {
   const [loading, setLoading] = useState(true);
@@ -45,4 +46,17 @@ export const useLoadingText = () => {
     };
   }, []);
   return text;
+};
+
+export const useOnlineCheck = () => {
+  const [online, setOnline] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+  useEffect(() => {
+    if (Object.keys(router.query).length > 0) {
+      setOnline((router.query["offline"] as string) === "false");
+      setLoading(false);
+    }
+  }, [router.query]);
+  return { online, loading };
 };

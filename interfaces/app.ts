@@ -30,3 +30,9 @@ interface MoreMoneyShape {
 }
 
 export type Values = "1" | "5" | "20" | "50" | "100" | "500" | "1000";
+
+export interface offlineOptions {
+  simulations: number;
+  betAmount: number;
+  alwaysBet: boolean;
+}
