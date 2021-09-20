@@ -37,6 +37,14 @@ export interface offlineOptions {
   alwaysBet: boolean;
 }
 
+export interface offlineResults {
+  gain: number;
+  winningHands: {
+    hand: string[];
+    winner: string;
+  }[];
+}
+
 export type Games = "blackjack" | "texas" | "twoup" | "aceyduecy";
 
 export type FaceValues = "C" | "S" | "H" | "D";
