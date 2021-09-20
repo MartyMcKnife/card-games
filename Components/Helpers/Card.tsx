@@ -1,9 +1,10 @@
 import React, { ReactElement } from "react";
 import { Image } from "@chakra-ui/react";
+import { FaceValues, Nums } from "../../interfaces/app";
 
 interface Props {
-  faceValue?: "C" | "S" | "H" | "D";
-  number?: number;
+  faceValue?: FaceValues;
+  number?: Nums;
   width?: string;
   random?: boolean;
 }
