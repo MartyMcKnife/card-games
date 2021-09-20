@@ -9,6 +9,7 @@ import {
   NumberInputField,
   NumberInputStepper,
 } from "@chakra-ui/number-input";
+import { Tooltip } from "@chakra-ui/react";
 import { ScaleFade } from "@chakra-ui/transition";
 import React, { ReactElement, useState } from "react";
 import { offlineOptions } from "../../../interfaces/app";
@@ -98,7 +99,12 @@ export default function OfflineSetup({
           >
             <FormControl mt="4">
               <HStack spacing="0" alignItems="baseline">
-                <FormLabel>Bet each time?</FormLabel>
+                <Tooltip
+                  label="Only bet if your initial hand is favourable"
+                  hasArrow
+                >
+                  <FormLabel>Bet each time?</FormLabel>
+                </Tooltip>
                 <Checkbox
                   defaultChecked
                   onChange={() => setAlwaysBet(!alwaysBet)}

@@ -25,7 +25,13 @@ export default function blackjack(): ReactElement {
           </ScaleFade>
           <ScaleFade in={simulate} hidden={!simulate} initialScale={0.1}>
             <Hero>
-              {simulate && <Game gameType="blackjack" options={settings} />}
+              {simulate && (
+                <Game
+                  gameType="blackjack"
+                  options={settings}
+                  setSimulate={setSimulate}
+                />
+              )}
             </Hero>
           </ScaleFade>
         </>

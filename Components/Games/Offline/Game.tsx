@@ -1,21 +1,122 @@
-import { HStack } from "@chakra-ui/layout";
+import { Flex, Heading, HStack, VStack, Text, Box } from "@chakra-ui/layout";
 import React, { ReactElement, useEffect, useState } from "react";
 import { Games, offlineOptions, offlineResults } from "../../../interfaces/app";
 import { runGame } from "../../../utils/games/offline";
+import { BarChart, Bar, Tooltip, XAxis, YAxis } from "recharts";
+import { Button } from "@chakra-ui/button";
 
 interface Props {
   gameType: Games;
   options: offlineOptions;
+  setSimulate: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export default function Game({ gameType, options }: Props): ReactElement {
+export default function Game({
+  gameType,
+  options,
+  setSimulate,
+}: Props): ReactElement {
   const [result, setResult] = useState<offlineResults>();
-  const [data, setData] = useState<{ name: string; val: number }[]>();
+  const [data, setData] = useState<{ name: string; Wins: number }[]>();
+  const [run, setRun] = useState(true);
+
   useEffect(() => {
-    const results = runGame(gameType, options);
-    setResult(results);
-    let dat = data;
-    results.winningHands.forEach((result) => {});
-  }, []);
-  return <HStack></HStack>;
+    if (run) {
+      const results = runGame(gameType, options);
+      setResult(results);
+
+      let dat = [];
+
+      results.winningHands.forEach((result) => {
+        if (result.winner === "P") {
+          const currentI = dat.findIndex(
+            (dataPoint) => dataPoint.name === result.hand
+          );
+          if (currentI > -1) {
+            const currentNo = dat[currentI].Wins;
+            dat[currentI] = { name: result.hand, Wins: currentNo + 1 };
+          } else {
+            dat.push({ name: result.hand, Wins: 1 });
+          }
+        }
+      });
+      //@ts-ignore
+      setData(dat.sort((a, b) => a.name - b.name));
+      setRun(false);
+    }
+  }, [run]);
+  console.log(data);
+  if (result && data.length > 0) {
+    return (
+      <Box>
+        <Flex>
+          <VStack mr="6">
+            <Heading alignSelf="flex-start" textDecoration="underline">
+              Player's Winning Hands:
+            </Heading>
+            <BarChart
+              data={data}
+              width={500}
+              height={300}
+              key={Math.random()}
+              margin={{ top: 20 }}
+            >
+              <XAxis dataKey="name" key={Math.random()} />
+              <YAxis />
+              <Tooltip />
+              <Bar dataKey="Wins" fill="#8884d8" />
+            </BarChart>
+          </VStack>
+
+          <VStack alignItems="flex-start">
+            <Heading textDecoration="underline" mb="8">
+              Stats:
+            </Heading>
+
+            <span>
+              <Heading fontSize="lg" display="inline-block">
+                Games Played:
+              </Heading>{" "}
+              <Text display="inline-block" fontSize="lg">
+                {result.winningHands.length}
+              </Text>
+            </span>
+            <span>
+              <Heading fontSize="lg" display="inline-block">
+                Games Won:
+              </Heading>{" "}
+              <Text display="inline-block" fontSize="lg">
+                {
+                  result.winningHands.filter((hand) => hand.winner === "P")
+                    .length
+                }
+              </Text>
+            </span>
+            <span>
+              <Heading fontSize="lg" display="inline-block">
+                Money {result.gain < 0 ? "Lost" : "Won"}:
+              </Heading>{" "}
+              <Text
+                display="inline-block"
+                textColor={result.gain < 0 ? "red.600" : "green.600"}
+                fontSize="lg"
+              >
+                ${Math.abs(result.gain)}
+              </Text>
+            </span>
+          </VStack>
+        </Flex>
+        <Flex justifyContent="flex-end">
+          <Button colorScheme="gray" onClick={() => setSimulate(false)} mr="4">
+            Change Settings
+          </Button>
+          <Button colorScheme="blue" onClick={() => setRun(true)}>
+            Run Again?
+          </Button>
+        </Flex>
+      </Box>
+    );
+  } else {
+    return null;
+  }
 }

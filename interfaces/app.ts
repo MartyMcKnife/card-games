@@ -40,7 +40,7 @@ export interface offlineOptions {
 export interface offlineResults {
   gain: number;
   winningHands: {
-    hand: string[];
+    hand: string;
     winner: string;
   }[];
 }

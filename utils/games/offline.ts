@@ -4,7 +4,7 @@ import { dealCards, getValue } from "./general";
 
 export interface returnStruct {
   gain: number;
-  win: { hand: Array<string>; winner: string };
+  win: { hand: string; winner: string };
 }
 
 type GameFunc = (betAmount: number, alwaysBet: boolean) => returnStruct;
@@ -37,11 +37,11 @@ const runBlackjack = (betAmount: number, alwaysBet: boolean): returnStruct => {
   }
   const win = {
     gain: betAmount * 2,
-    win: { hand: [playerSum.toString()], winner: "P" },
+    win: { hand: playerSum <= 21 ? playerSum.toString() : "Bust", winner: "P" },
   };
   const lose = {
     gain: -betAmount,
-    win: { hand: [dealerSum.toString()], winner: "D" },
+    win: { hand: dealerSum <= 21 ? dealerSum.toString() : "Bust", winner: "D" },
   };
   if (dealerSum > 21 && playerSum < 21) {
     return win;
@@ -62,7 +62,7 @@ export const runGame = (gameType: Games, options: offlineOptions) => {
   //(assuming the user has set alwaysBet to true)
   //If they haven't then we check whether the bet is favourable, and place the bet
   let winnings = 0;
-  let winningHands: Array<{ hand: Array<string>; winner: string }> = [];
+  let winningHands: Array<{ hand: string; winner: string }> = [];
   for (let i = 0; i < options.simulations; i++) {
     const gameFunc = lookupFuncs[gameType] as GameFunc;
     const gameInfo = gameFunc(options.betAmount, options.alwaysBet);
