@@ -51,7 +51,7 @@ export default function OfflineSetup({
             <NumberInput
               value={sims}
               min={1}
-              max={10000}
+              max={1000000}
               step={10}
               keepWithinRange={true}
               isRequired
