@@ -12,4 +12,4 @@ const withTM = require("next-transpile-modules")([
   "d3-time-format",
 ]);
 
-module.exports = withTM({ webpack5: false });
+module.exports = withTM();

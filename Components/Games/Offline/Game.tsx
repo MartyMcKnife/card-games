@@ -19,11 +19,13 @@ export default function Game({
   const [result, setResult] = useState<offlineResults>();
   const [data, setData] = useState<{ name: string; Wins: number }[]>();
   const [run, setRun] = useState(true);
+  const [runningTotal, setRunningTotal] = useState(0);
 
   useEffect(() => {
     if (run) {
       const results = runGame(gameType, options);
       setResult(results);
+      setRunningTotal(runningTotal + results.gain);
 
       let dat = [];
 
@@ -102,6 +104,18 @@ export default function Game({
                 fontSize="lg"
               >
                 ${Math.abs(result.gain)}
+              </Text>
+            </span>
+            <span>
+              <Heading fontSize="lg" display="inline-block">
+                Total Earnings:
+              </Heading>{" "}
+              <Text
+                display="inline-block"
+                textColor={runningTotal < 0 ? "red.600" : "green.600"}
+                fontSize="lg"
+              >
+                ${runningTotal}
               </Text>
             </span>
           </VStack>
