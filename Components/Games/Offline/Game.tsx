@@ -26,7 +26,7 @@ export default function Game({
       const results = runGame(gameType, options);
       setResult(results);
       setRunningTotal(runningTotal + results.gain);
-
+      console.log(results);
       let dat = [];
 
       results.winningHands.forEach((result) => {
@@ -42,13 +42,13 @@ export default function Game({
           }
         }
       });
+      console.log(dat);
       //@ts-ignore
       setData(dat.sort((a, b) => a.name - b.name));
       setRun(false);
     }
   }, [run]);
-  console.log(data);
-  if (result && data.length > 0) {
+  if (result) {
     return (
       <Box>
         <Flex>
@@ -56,18 +56,24 @@ export default function Game({
             <Heading alignSelf="flex-start" textDecoration="underline">
               Player's Winning Hands:
             </Heading>
-            <BarChart
-              data={data}
-              width={500}
-              height={300}
-              key={Math.random()}
-              margin={{ top: 20 }}
-            >
-              <XAxis dataKey="name" key={Math.random()} />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="Wins" fill="#8884d8" />
-            </BarChart>
+            {data.length > 0 ? (
+              <BarChart
+                data={data}
+                width={500}
+                height={300}
+                key={Math.random()}
+                margin={{ top: 20 }}
+              >
+                <XAxis dataKey="name" key={Math.random()} />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="Wins" fill="#8884d8" />
+              </BarChart>
+            ) : (
+              <VStack h="full" w="full" justifyContent="center">
+                <Text textDecoration="italic">You didn't win anything!</Text>
+              </VStack>
+            )}
           </VStack>
 
           <VStack alignItems="flex-start">
@@ -120,7 +126,7 @@ export default function Game({
             </span>
           </VStack>
         </Flex>
-        <Flex justifyContent="flex-end">
+        <Flex justifyContent="flex-end" mt="2">
           <Button colorScheme="gray" onClick={() => setSimulate(false)} mr="4">
             Change Settings
           </Button>
