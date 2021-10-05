@@ -1,12 +1,12 @@
 import { FaceNums, Games, offlineOptions } from "../../interfaces/app";
 import { FaceValues, Nums } from "../../interfaces/app";
-import { initCards, getValue, processHand } from "./general";
+import { initCards, getValue, processHand, flipCoins } from "./general";
 import * as ps from "pokersolver";
 const Hand = ps.Hand;
 
 export interface returnStruct {
   gain: number;
-  win: { hand: string; winner: string };
+  win: { hand: string | FaceNums; winner: string };
 }
 
 type GameFunc = (betAmount: number, alwaysBet: boolean) => returnStruct;
@@ -39,7 +39,7 @@ const runBlackjack = (betAmount: number, alwaysBet: boolean): returnStruct => {
     dealerSum = getValue(dealerCards, true);
   }
   const win = {
-    gain: betAmount * 2,
+    gain: betAmount,
     win: { hand: playerSum <= 21 ? playerSum.toString() : "Bust", winner: "P" },
   };
   const lose = {
@@ -88,7 +88,7 @@ const runTexas = (betAmount: number, alwaysBet: boolean): returnStruct => {
     };
   } else {
     return {
-      gain: playerIn * 2,
+      gain: playerIn,
       win: {
         hand: playerResult.name,
         winner: "P",
@@ -97,9 +97,82 @@ const runTexas = (betAmount: number, alwaysBet: boolean): returnStruct => {
   }
 };
 
-const lookupFuncs: { [key in string]: GameFunc } = {
+const runTwoup = (betAmount: number, alwaysBet: boolean): returnStruct => {
+  const options = ["HH", "TT", "HT", "TH"];
+
+  const playerBet = options[Math.floor(Math.random() * options.length)];
+  const dealerBet = options[Math.round(Math.random() * options.length)];
+
+  const result = flipCoins(2).join("");
+  if (dealerBet === result) {
+    return {
+      gain: -betAmount,
+      win: {
+        hand: result,
+        winner: "D",
+      },
+    };
+  } else if (playerBet === result) {
+    return {
+      gain: betAmount,
+      win: {
+        hand: result,
+        winner: "P",
+      },
+    };
+  } else {
+    return {
+      gain: 0,
+      win: {
+        hand: "No One",
+        winner: "P",
+      },
+    };
+  }
+};
+
+const runAceydeucy = (betAmount: number, alwaysBet: boolean): returnStruct => {
+  const dealCards = initCards();
+
+  const cards = dealCards(2);
+  const cardValues = getValue(cards) as number[];
+
+  const biggest = Math.max(...cardValues);
+  const smallest = Math.min(...cardValues);
+
+  const diff = biggest - smallest;
+
+  let bet = 0;
+  if (alwaysBet || diff > 8) {
+    bet = betAmount;
+  }
+
+  const [third] = dealCards(1);
+
+  if (getValue(third) > smallest && getValue(third) < biggest) {
+    return {
+      gain: bet,
+      win: {
+        winner: "P",
+        hand: [...cards, third].join(", "),
+      },
+    };
+  } else {
+    return {
+      gain: -bet,
+      win: {
+        winner: "D",
+        hand: "Loss",
+      },
+    };
+  }
+};
+
+const lookupFuncs: { [key in Games]: GameFunc } = {
   blackjack: runBlackjack,
   texas: runTexas,
+  twoup: runTwoup,
+  aceyduecy: runAceydeucy,
 };
 
 export const runGame = (gameType: Games, options: offlineOptions) => {
@@ -111,6 +184,7 @@ export const runGame = (gameType: Games, options: offlineOptions) => {
   for (let i = 0; i < options.simulations; i++) {
     const gameFunc = lookupFuncs[gameType];
     const gameInfo = gameFunc(options.betAmount, options.alwaysBet);
+    console.log(winnings, gameInfo.gain);
     winnings += gameInfo.gain;
     winningHands.push(gameInfo.win);
   }

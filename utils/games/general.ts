@@ -70,3 +70,12 @@ export const processHand = (hand: Array<FaceNums>) => {
     }
   });
 };
+
+export const flipCoins = (amount: number) => {
+  const faces = ["H", "T"];
+  let coins = [];
+  for (let i = 0; i < amount; i++) {
+    coins.push(faces[Math.floor(Math.random() * amount)]);
+  }
+  return coins;
+};

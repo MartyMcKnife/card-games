@@ -23,7 +23,7 @@ export default function cardgames(): ReactElement {
           />
         </Box>
       </Flex>
-      <SimpleGrid columns={[2, 3]} mt="4" w="full">
+      <SimpleGrid columns={[2, 3]} mt="4" w="full" gap="4">
         <BoxItem
           name="Blackjack"
           icon="/imgs/blackjack.png"
@@ -35,6 +35,18 @@ export default function cardgames(): ReactElement {
           icon="/imgs/poker.png"
           description="A very popular variation of poker!"
           linkurl={`/games/poker?offline=${offline}`}
+        />
+        <BoxItem
+          name="Two up"
+          icon="/imgs/coin.png"
+          description="A popular Australian coin game!"
+          linkurl={`/games/twoup?offline=${offline}`}
+        />
+        <BoxItem
+          name="Acey Deucy"
+          icon="/imgs/playing-card.png"
+          description="A simple, card guessing game!"
+          linkurl={`/games/aceydeucy?offline=${offline}`}
         />
       </SimpleGrid>
     </Hero>
