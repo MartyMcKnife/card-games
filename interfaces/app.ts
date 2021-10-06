@@ -5,6 +5,14 @@ export interface User {
   balance: Balance;
 }
 
+export interface ServerConf {
+  gameID: string;
+  gameType: Games;
+  maxPlayers: number;
+  currentPlayers: number;
+  maxBet: number;
+}
+
 export interface Balance {
   "1000"?: number;
   "500"?: number;
@@ -35,6 +43,11 @@ export interface offlineOptions {
   simulations: number;
   betAmount: number;
   alwaysBet: boolean;
+}
+
+export interface onlineOptions {
+  random: boolean;
+  code?: string;
 }
 
 export interface offlineResults {

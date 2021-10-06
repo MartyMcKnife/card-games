@@ -5,7 +5,8 @@ interface Props {
   name: string;
   icon: string;
   description: string;
-  linkurl: string;
+  linkurl?: string;
+  onClick?: React.MouseEventHandler<HTMLDivElement>;
 }
 
 export default function BoxItem({
@@ -13,18 +14,23 @@ export default function BoxItem({
   icon,
   description,
   linkurl,
+  onClick,
 }: Props): ReactElement {
   return (
-    <Box cursor="pointer" width="max-content" textAlign="center">
+    <Box
+      cursor="pointer"
+      width="max-content"
+      textAlign="center"
+      onClick={onClick}
+    >
       <a href={linkurl}>
         <Tooltip label={description} aria-label="A tooltip">
           <span tabIndex={0}>
             <Image
               src={icon}
-              width="24"
-              maxHeight="16"
+              w="24"
+              height="auto"
               marginX="auto"
-              objectFit="cover"
               rounded="lg"
             />
             <Text fontWeight="bold" paddingTop="2">
