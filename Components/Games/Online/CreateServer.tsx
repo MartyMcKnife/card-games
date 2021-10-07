@@ -19,23 +19,25 @@ import {
 } from "@chakra-ui/react";
 import { Select } from "@chakra-ui/select";
 import React, { ReactElement, useState } from "react";
-import { ServerConf, Games } from "../../../interfaces/app";
+import { ServerConf, Games, User } from "../../../interfaces/app";
 import BoxItem from "../../BoxItem";
 import { onlineOptions } from "../../../interfaces/app";
 import { createServer } from "../../../utils/firebase/firestore";
 import shortid from "shortid";
 
 interface Props {
-  setOptions: React.Dispatch<React.SetStateAction<onlineOptions>>;
+  setOptions: React.Dispatch<React.SetStateAction<string>>;
   setContinue: React.Dispatch<React.SetStateAction<boolean>>;
+  user: User;
 }
 
 export default function CreateServer({
   setOptions,
   setContinue,
+  user,
 }: Props): ReactElement {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [gameType, setGameType] = useState<Games>();
+  const [gameType, setGameType] = useState<Games>("blackjack");
   const [maxPlayers, setMaxPlayers] = useState<number>(6);
   const [maxBet, setMaxBet] = useState(20);
   const [error, setError] = useState<string>();
@@ -43,19 +45,19 @@ export default function CreateServer({
 
   const handleSubmit = async () => {
     setLoading(true);
-    shortid.characters(
-      "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    );
-    const gameID = shortid.generate();
+    const gameID = Math.random().toString(36).substr(2, 6);
     if (gameType && maxPlayers && maxBet) {
       try {
-        await createServer({
-          gameID,
-          gameType,
-          maxPlayers,
-          currentPlayers: 1,
-          maxBet,
-        });
+        await createServer(
+          {
+            gameID,
+            gameType,
+            maxPlayers,
+            currentPlayers: 0,
+            maxBet,
+          },
+          user
+        );
       } catch (error) {
         console.error(error);
         setError("Unexpected error when creating server!");
@@ -63,12 +65,13 @@ export default function CreateServer({
         return;
       }
     } else {
+      console.log(gameType, maxPlayers, maxBet);
       setError("Please fill in all fields!");
       setLoading(false);
       return;
     }
 
-    setOptions({ random: false, code: gameID });
+    setOptions(gameID);
     onClose();
     setContinue(true);
   };
@@ -90,6 +93,7 @@ export default function CreateServer({
               <Select
                 option="Select option"
                 onChange={(str) => setGameType(str.target.value as Games)}
+                value={gameType}
               >
                 <option value="blackjack">Blackjack</option>
                 <option value="texas">Texas Hold'em</option>
@@ -116,8 +120,8 @@ export default function CreateServer({
             <FormControl mt="4">
               <FormLabel>Max Bet</FormLabel>
               <NumberInput
-                min={2}
-                max={gameType === "twoup" ? 3 : 10}
+                min={1}
+                max={1000}
                 onChange={(str, num) => {
                   setMaxBet(num);
                 }}

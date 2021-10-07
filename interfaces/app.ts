@@ -13,6 +13,19 @@ export interface ServerConf {
   maxBet: number;
 }
 
+export interface Realtime {
+  gameID: string;
+  currentPlayer: string;
+  timeLeft: number; // in seconds
+  players: RPlayers[];
+}
+export interface RPlayers {
+  username: string;
+  userID: string;
+  start: boolean;
+  hand?: string;
+  betAmount?: string;
+}
 export interface Balance {
   "1000"?: number;
   "500"?: number;

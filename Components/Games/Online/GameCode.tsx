@@ -12,14 +12,10 @@ import {
 import { Text, Input } from "@chakra-ui/react";
 import React, { ReactElement, useState } from "react";
 import BoxItem from "../../BoxItem";
-import { onlineOptions } from "../../../interfaces/app";
-import {
-  connectPlayer,
-  getServerGameID,
-} from "../../../utils/firebase/firestore";
+import { getServerGameID } from "../../../utils/firebase/firestore";
 
 interface Props {
-  setOptions: React.Dispatch<React.SetStateAction<onlineOptions>>;
+  setOptions: React.Dispatch<React.SetStateAction<string>>;
   setContinue: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -38,11 +34,10 @@ export default function CreateServer({
       try {
         const code = await getServerGameID(gameCode);
         if (!code) {
-          setError("No game for that id exists!");
+          setError("No empty game for that id exists!");
           setLoading(false);
           return;
         } else {
-          connectPlayer(code);
         }
       } catch (error) {
         console.error(error);
@@ -55,7 +50,7 @@ export default function CreateServer({
       setLoading(false);
       return;
     }
-    setOptions({ random: false, code: gameCode });
+    setOptions(gameCode);
     onClose();
     setContinue(true);
   };
@@ -75,7 +70,7 @@ export default function CreateServer({
             <FormControl>
               <FormLabel>Enter the code</FormLabel>
               <Input
-                placeholder="AAAAAAA"
+                placeholder="AAAAAA"
                 onChange={(txt) => {
                   setGameCode(txt.target.value);
                 }}
