@@ -43,9 +43,12 @@ export const randomServerID = async () => {
   const servers = await getDocs(collection(db, "servers"));
 
   if (!servers.empty) {
-    const randServer = servers[
+    const emptyServers = servers.docs.filter(
+      (server) => server.data().currentPlayers < server.data().maxPlayers
+    );
+    const randServer = emptyServers[
       Math.floor(Math.random() * servers.size)
-    ] as ServerConf;
+    ].data() as ServerConf;
 
     return randServer.gameID;
   } else {
@@ -59,13 +62,14 @@ export const getServerGameID = async (id: string): Promise<string> => {
   );
 
   if (!servers.empty) {
-    console.log(servers);
-    const serverData = servers.docs[0].data() as ServerConf;
-    console.log(serverData);
-    return serverData.gameID;
-  } else {
-    return "";
+    const serverData = servers.docs.filter(
+      (server) => server.data().currentPlayers < server.data().maxPlayers
+    );
+    if (serverData.length > 0) {
+      return serverData[0].data().gameID;
+    }
   }
+  return "";
 };
 
 export const connectPlayer = async (id: string) => {
