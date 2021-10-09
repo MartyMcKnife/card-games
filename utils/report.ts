@@ -11,8 +11,8 @@ export const printReport = (
 
   const columns = ["Game No#", "Result", "Winning Hand", "Gainings"];
   //Text is slightly out of order to save resetting the fontface everyone time
-  doc.text(sessionEarnings.toString(), 62, 20);
-  doc.text(finalBalance.toString(), 52, 30);
+  doc.text("$" + sessionEarnings, 62, 20);
+  doc.text("$" + finalBalance, 52, 30);
 
   doc.text("Session Earnings:", 14, 20);
   doc.text("Final Balance:", 14, 30);

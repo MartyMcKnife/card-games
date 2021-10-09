@@ -46,7 +46,7 @@ const runBlackjack = (betAmount: number, alwaysBet: boolean): returnStruct => {
     gain: -betAmount,
     win: { hand: dealerSum <= 21 ? dealerSum.toString() : "Bust", winner: "D" },
   };
-  if (dealerSum > 21 && playerSum < 21) {
+  if (dealerSum > 21 && playerSum <= 21) {
     return win;
   }
   if (playerSum <= 21 && playerSum > dealerSum) {

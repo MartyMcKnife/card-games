@@ -48,15 +48,15 @@ export const useLoadingText = () => {
   return text;
 };
 
-export const useOnlineCheck = () => {
-  const [online, setOnline] = useState(false);
+export const useManualCheck = () => {
+  const [manual, setManual] = useState(false);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   useEffect(() => {
     if (Object.keys(router.query).length > 0) {
-      setOnline((router.query["offline"] as string) === "false");
+      setManual((router.query["manual"] as string) === "true");
       setLoading(false);
     }
   }, [router.query]);
-  return { online, loading };
+  return { manual, loading };
 };

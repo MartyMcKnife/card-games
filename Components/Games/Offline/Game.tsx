@@ -15,6 +15,7 @@ interface Props {
   setSimulate: React.Dispatch<React.SetStateAction<boolean>>;
   bal: number;
   uid: string;
+  manual: boolean;
 }
 
 export default function Game({
@@ -59,6 +60,7 @@ export default function Game({
       setRun(false);
     }
   }, [run]);
+
   if (result) {
     return (
       <Box>

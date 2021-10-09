@@ -1,5 +1,8 @@
 import { FaceNums, RPlayers } from "../../interfaces/app";
 
+const clamp = (num: number, min: number, max: number) =>
+  Math.min(Math.max(num, min), max);
+
 const dealCard = (dealtCards: Array<FaceNums>, max?: number): FaceNums => {
   const values = ["C", "S", "D", "H"];
   const value = values[Math.floor(Math.random() * values.length)];
@@ -26,17 +29,20 @@ export const initCards = () => {
 
 export const getValue = (
   card: FaceNums | Array<FaceNums>,
-  totalArr: boolean = false
+  totalArr: boolean = false,
+  max: number = 13
 ) => {
   if (Array.isArray(card)) {
-    const cardNums = card.map((value) => parseInt(value.slice(1)));
+    const cardNums = card.map((value) =>
+      clamp(parseInt(value.slice(1)), 0, max)
+    );
     if (totalArr) {
       return cardNums.reduce((a, b) => a + b, 0);
     } else {
       return cardNums;
     }
   } else {
-    return parseInt(card.slice(1));
+    return clamp(parseInt(card.slice(1)), 0, max);
   }
 };
 
@@ -82,4 +88,24 @@ export const flipCoins = (amount: number) => {
 
 export const getUsername = (uid: string, players: RPlayers[]) => {
   return players.find((player) => player.userID === uid).username;
+};
+
+//Because i am idoit, i name all the cards back to front
+//This fixes that
+export const swapCards = (cardValue: FaceNums) => {
+  const arr = cardValue.split("");
+  //Get suite
+  const suite = arr[0];
+  //Push to back, and remove it from the front
+  arr.shift();
+  arr.push(suite);
+  return arr.join("");
+};
+
+export const getMax = (nums: number[], max: number = 0) => {
+  let numbers = nums;
+  if (max) {
+    numbers = nums.filter((num) => num <= max);
+  }
+  return Math.max(...numbers);
 };
