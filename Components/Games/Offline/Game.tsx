@@ -4,29 +4,41 @@ import { Games, offlineOptions, offlineResults } from "../../../interfaces/app";
 import { runGame } from "../../../utils/games/offline";
 import { BarChart, Bar, Tooltip, XAxis, YAxis } from "recharts";
 import { Button } from "@chakra-ui/button";
+import useAsyncEffect from "use-async-effect";
+import { updateBalance } from "../../../utils/firebase/firestore";
+import { printReport } from "../../../utils/report";
+import router from "next/router";
 
 interface Props {
   gameType: Games;
   options: offlineOptions;
   setSimulate: React.Dispatch<React.SetStateAction<boolean>>;
+  bal: number;
+  uid: string;
 }
 
 export default function Game({
   gameType,
   options,
   setSimulate,
+  bal,
+  uid,
 }: Props): ReactElement {
   const [result, setResult] = useState<offlineResults>();
-  const [data, setData] = useState<{ name: string; Wins: number }[]>();
+  const [runningResult, setRunningResult] = useState<offlineResults[]>([]);
+  const [data, setData] = useState<{ name: string; Wins: number }[]>([]);
   const [run, setRun] = useState(true);
   const [runningTotal, setRunningTotal] = useState(0);
+  const [bank, setBank] = useState(bal);
 
-  useEffect(() => {
+  useAsyncEffect(async () => {
     if (run) {
       const results = runGame(gameType, options);
       setResult(results);
+      setRunningResult([...runningResult, results]);
       setRunningTotal(runningTotal + results.gain);
-      console.log(results);
+      setBank(bank + results.gain);
+      await updateBalance(uid, bank + results.gain);
       let dat = [];
 
       results.winningHands.forEach((result) => {
@@ -42,7 +54,6 @@ export default function Game({
           }
         }
       });
-      console.log(dat);
       //@ts-ignore
       setData(dat.sort((a, b) => a.name - b.name));
       setRun(false);
@@ -51,6 +62,16 @@ export default function Game({
   if (result) {
     return (
       <Box>
+        <Flex w="full" justifyContent="flex-end">
+          <Button
+            justifySelf="flex-start"
+            onClick={() => router.push("/cardgames")}
+            size="xs"
+          >
+            Leave
+          </Button>
+        </Flex>
+
         <Flex>
           <VStack mr="6">
             <Heading alignSelf="flex-start" textDecoration="underline">
@@ -114,7 +135,7 @@ export default function Game({
             </span>
             <span>
               <Heading fontSize="lg" display="inline-block">
-                Total Earnings:
+                Total Earnings for the game:
               </Heading>{" "}
               <Text
                 display="inline-block"
@@ -124,11 +145,32 @@ export default function Game({
                 ${runningTotal}
               </Text>
             </span>
+            <span>
+              <Heading fontSize="lg" display="inline-block">
+                Bank Balance:
+              </Heading>{" "}
+              <Text
+                display="inline-block"
+                textColor={bank < 0 ? "red.600" : "green.600"}
+                fontSize="lg"
+              >
+                ${bank}
+              </Text>
+            </span>
           </VStack>
         </Flex>
         <Flex justifyContent="flex-end" mt="2">
           <Button colorScheme="gray" onClick={() => setSimulate(false)} mr="4">
             Change Settings
+          </Button>
+          <Button
+            colorScheme="green"
+            onClick={() => {
+              printReport(runningTotal, runningResult, bank);
+            }}
+            mr="4"
+          >
+            Print Report?
           </Button>
           <Button colorScheme="blue" onClick={() => setRun(true)}>
             Run Again?

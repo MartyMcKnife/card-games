@@ -180,13 +180,15 @@ export const runGame = (gameType: Games, options: offlineOptions) => {
   //(assuming the user has set alwaysBet to true)
   //If they haven't then we check whether the bet is favourable, and place the bet
   let winnings = 0;
-  let winningHands: Array<{ hand: string; winner: string }> = [];
+  let winningHands: Array<{ hand: string; winner: string; earnings: number }> =
+    [];
   for (let i = 0; i < options.simulations; i++) {
     const gameFunc = lookupFuncs[gameType];
     const gameInfo = gameFunc(options.betAmount, options.alwaysBet);
     console.log(winnings, gameInfo.gain);
     winnings += gameInfo.gain;
-    winningHands.push(gameInfo.win);
+    const result = { ...gameInfo.win, earnings: gameInfo.gain };
+    winningHands.push(result);
   }
   return {
     gain: winnings,

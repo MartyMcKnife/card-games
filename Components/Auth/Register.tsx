@@ -57,15 +57,7 @@ export default function Register(): ReactElement {
         userID: user.uid,
         email: email,
         userName: username,
-        balance: {
-          "1000": 0,
-          "500": 0,
-          "100": 1,
-          "50": 5,
-          "20": 10,
-          "5": 15,
-          "1": 10,
-        },
+        balance: 635,
       };
       await createUser(newUser);
       router.push("/");
@@ -96,7 +88,6 @@ export default function Register(): ReactElement {
                 setUsername(e.target.value);
               }}
               value={username}
-              width={96}
               required
             />
           </InputGroup>
@@ -115,7 +106,6 @@ export default function Register(): ReactElement {
                 setEmail(e.target.value);
               }}
               value={email}
-              width={96}
               required
             />
           </InputGroup>
@@ -134,7 +124,6 @@ export default function Register(): ReactElement {
                 setPassword(e.target.value);
               }}
               value={password}
-              width={96}
               required
             />
             <InputRightElement

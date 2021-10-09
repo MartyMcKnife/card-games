@@ -71,7 +71,6 @@ export default function Login(): ReactElement {
                 setEmail(e.target.value);
               }}
               value={email}
-              width={96}
             />
           </InputGroup>
           <FormLabel marginTop="4">Password</FormLabel>
@@ -87,7 +86,6 @@ export default function Login(): ReactElement {
                 setPassword(e.target.value);
               }}
               value={password}
-              width={96}
             />
             <InputRightElement
               children={

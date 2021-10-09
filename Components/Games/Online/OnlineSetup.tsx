@@ -1,7 +1,7 @@
 import { Heading, SimpleGrid } from "@chakra-ui/layout";
 import { useToast } from "@chakra-ui/toast";
 import React, { ReactElement } from "react";
-import { onlineOptions } from "../../../interfaces/app";
+import { Games, onlineOptions } from "../../../interfaces/app";
 import { randomServerID } from "../../../utils/firebase/firestore";
 import { useAuth } from "../../../utils/hooks";
 import BoxItem from "../../BoxItem";
@@ -13,11 +13,13 @@ import GameCode from "./GameCode";
 interface Props {
   setCode: React.Dispatch<React.SetStateAction<string>>;
   setContinue: React.Dispatch<React.SetStateAction<boolean>>;
+  gameType: Games;
 }
 
 export default function OnlineSetup({
   setCode,
   setContinue,
+  gameType,
 }: Props): ReactElement {
   const toast = useToast();
   const { loading, user } = useAuth();
@@ -65,6 +67,7 @@ export default function OnlineSetup({
             setOptions={setCode}
             setContinue={setContinue}
             user={user}
+            gameType={gameType}
           />
           <GameCode setOptions={setCode} setContinue={setContinue} />
         </SimpleGrid>

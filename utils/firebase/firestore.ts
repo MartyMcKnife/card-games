@@ -29,7 +29,7 @@ export const createUser = async (user: User) => {
   await setDoc(doc(collRef, user.userID), user);
 };
 
-export const updateBalance = async (userID: string, newBalance: Balance) => {
+export const updateBalance = async (userID: string, newBalance: number) => {
   const docRef = doc(db, "users", userID);
   await updateDoc(docRef, { balance: newBalance });
 };
@@ -46,6 +46,7 @@ export const createServer = async (server: ServerConf, user: User) => {
       {
         username: user.userName,
         userID: user.userID,
+        bal: user.balance,
         start: false,
       },
     ],
@@ -88,7 +89,7 @@ export const getServerGameID = async (id: string): Promise<string> => {
 export const connectPlayer = async (
   id: string,
   username: string,
-  userID: string
+  user: User
 ) => {
   const serverRef = doc(db, "servers", id);
   const realtimeRef = doc(db, "realtime", id);
@@ -97,7 +98,12 @@ export const connectPlayer = async (
   await updateDoc(realtimeRef, {
     players: [
       ...curPlayers,
-      { username: username, userID: userID, start: false },
+      {
+        username: username,
+        userID: user.userID,
+        start: false,
+        bal: user.balance,
+      },
     ],
   });
 };
@@ -146,7 +152,7 @@ export const nextPlayer = async (
   const realtimeRef = doc(db, "realtime", id);
   const cInex = players.findIndex((player) => player.userID === currentPlayer);
   await updateDoc(realtimeRef, {
-    currentPlayer: players[cInex === players.length - 1 ? 0 : cInex + 1],
+    currentPlayer: players[cInex === players.length - 1 ? 0 : cInex + 1].userID,
     timeLeft: Math.round(Date.now() / 1000 + 30),
   });
 };

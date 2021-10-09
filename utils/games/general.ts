@@ -1,4 +1,4 @@
-import { FaceNums } from "../../interfaces/app";
+import { FaceNums, RPlayers } from "../../interfaces/app";
 
 const dealCard = (dealtCards: Array<FaceNums>, max?: number): FaceNums => {
   const values = ["C", "S", "D", "H"];
@@ -78,4 +78,8 @@ export const flipCoins = (amount: number) => {
     coins.push(faces[Math.floor(Math.random() * amount)]);
   }
   return coins;
+};
+
+export const getUsername = (uid: string, players: RPlayers[]) => {
+  return players.find((player) => player.userID === uid).username;
 };

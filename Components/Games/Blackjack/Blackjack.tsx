@@ -1,4 +1,4 @@
-import React, { ReactElement, useState, useEffect } from "react";
+import React, { ReactElement, useState, useEffect, useRef } from "react";
 import {
   connectPlayer,
   disconnectPlayer,
@@ -15,6 +15,9 @@ import { db } from "../../../utils/firebase/firebase-config";
 import { useAuth } from "../../../utils/hooks";
 import FullPageLoading from "../../Helpers/FullPageLoading";
 import useAsyncEffect from "use-async-effect";
+import Seat from "../Online/Seat";
+import { calc } from "@chakra-ui/styled-system";
+import { calcBal } from "../../Landing";
 
 interface Props {
   code: string;
@@ -22,12 +25,28 @@ interface Props {
 }
 
 export default function Blackjack({ code, user }: Props): ReactElement {
-  const [currentUser, setCurrentUser] = useState<string>();
+  const [curUID, setCurUID] = useState<string>();
   const [timeLeft, setTimeLeft] = useState<number>();
   const [usStart, setUsStart] = useState(false);
   const [gameStart, setGameStart] = useState(false);
   const [players, setPlayers] = useState<RPlayers[]>();
   const [min2, setMin2] = useState(false);
+
+  const [dimensions, setDimensions] = useState<{
+    width: number;
+    height: number;
+  }>({ width: 0, height: 0 });
+
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    if (canvasRef.current) {
+      setDimensions({
+        width: canvasRef.current.offsetWidth,
+        height: canvasRef.current.offsetHeight,
+      });
+    }
+  }, []);
 
   useEffect(() => {
     const unsub = onSnapshot(doc(db, "realtime", code), async (item) => {
@@ -37,7 +56,7 @@ export default function Blackjack({ code, user }: Props): ReactElement {
       if (
         data.players.findIndex((player) => player.userID === user.userID) < 0
       ) {
-        await connectPlayer(code, user.userName, user.userID);
+        await connectPlayer(code, user.userName, user);
       }
 
       //Check there is enough players to play
@@ -58,10 +77,7 @@ export default function Blackjack({ code, user }: Props): ReactElement {
       // Handle the updating of the current player
       if (data.currentPlayer !== "NOTSTARTED") {
         setTimeLeft(data.timeLeft);
-        const username = data.players.find(
-          (player) => player.userID === data.currentPlayer
-        ).username;
-        setCurrentUser(username);
+        setCurUID(data.currentPlayer);
       }
       setPlayers(data.players);
     });
@@ -79,16 +95,12 @@ export default function Blackjack({ code, user }: Props): ReactElement {
 
   useAsyncEffect(async () => {
     const interval = setInterval(async () => {
-      if (players && currentUser) {
-        const userID = players.find(
-          (player) => player.username === currentUser
-        ).userID;
-
+      if (players && curUID) {
         if (
           timeLeft === Math.round(Date.now() / 1000) &&
-          user.userID === userID
+          user.userID === curUID
         ) {
-          await nextPlayer(code, players, currentUser);
+          await nextPlayer(code, players, curUID);
           clearInterval(interval);
         }
       }
@@ -96,6 +108,36 @@ export default function Blackjack({ code, user }: Props): ReactElement {
     return () => {
       clearInterval(interval);
     };
-  }, [timeLeft, currentUser]);
-  return <></>;
+  }, [timeLeft, curUID]);
+
+  //Seats will be placed around in a semicircle to the timer and current player
+  //This can be given by (rcos(k*pi/n), rsin(k*pi/n))
+  //Where r is radius, k is the element number, and n is one more than the elements to place
+
+  if (players) {
+    const seats = players.map((player, i) => {
+      const x = Math.cos((i * Math.PI) / (players.length + 1));
+      const y = Math.sin((i * Math.PI) / (players.length + 1));
+      console.log(dimensions);
+      return (
+        <Box position="absolute" left={x} top={y}>
+          <Seat
+            name={player.username}
+            bal={calcBal(player.bal)}
+            active={curUID === player.userID ? true : false}
+          />
+        </Box>
+      );
+    });
+    return (
+      <div ref={canvasRef}>
+        <h1>Code: {code}</h1>
+        <Box position="relative" w="full" h="full">
+          {seats}
+        </Box>
+      </div>
+    );
+  } else {
+    return null;
+  }
 }

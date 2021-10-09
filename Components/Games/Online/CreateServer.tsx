@@ -29,15 +29,16 @@ interface Props {
   setOptions: React.Dispatch<React.SetStateAction<string>>;
   setContinue: React.Dispatch<React.SetStateAction<boolean>>;
   user: User;
+  gameType: Games;
 }
 
 export default function CreateServer({
   setOptions,
   setContinue,
   user,
+  gameType,
 }: Props): ReactElement {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [gameType, setGameType] = useState<Games>("blackjack");
   const [maxPlayers, setMaxPlayers] = useState<number>(6);
   const [maxBet, setMaxBet] = useState(20);
   const [error, setError] = useState<string>();
@@ -88,18 +89,6 @@ export default function CreateServer({
         <ModalContent>
           <ModalHeader fontSize="3xl">Enter Server Options</ModalHeader>
           <ModalBody>
-            <FormControl>
-              <FormLabel>Select a Game Type</FormLabel>
-              <Select
-                option="Select option"
-                onChange={(str) => setGameType(str.target.value as Games)}
-                value={gameType}
-              >
-                <option value="blackjack">Blackjack</option>
-                <option value="texas">Texas Hold'em</option>
-                <option value="twoup">Two Up</option>
-              </Select>
-            </FormControl>
             <FormControl mt="4">
               <FormLabel>Max Players</FormLabel>
               <NumberInput

@@ -2,7 +2,7 @@ export interface User {
   userID: string;
   userName: string;
   email: string;
-  balance: Balance;
+  balance: number;
 }
 
 export interface ServerConf {
@@ -23,6 +23,7 @@ export interface RPlayers {
   username: string;
   userID: string;
   start: boolean;
+  bal: Balance;
   hand?: string;
   betAmount?: string;
 }
@@ -68,6 +69,7 @@ export interface offlineResults {
   winningHands: {
     hand: string;
     winner: string;
+    earnings: number;
   }[];
 }
 

@@ -6,20 +6,21 @@ import BoxItem from "../Components/BoxItem";
 import Hero from "../Components/Helpers/Hero";
 
 export default function cardgames(): ReactElement {
-  const [offline, setOffline] = useState(false);
+  const [manual, setManual] = useState(false);
   return (
     <Hero>
       <Flex justifyContent="space-between" alignItems="center" width="full">
         <Heading>Games</Heading>
         <Box display="flex" alignItems="center">
-          <FormLabel htmlFor="offline" mb="0" fontSize="sm">
-            Offline Mode?
+          <FormLabel htmlFor="manual" mb="0" fontSize="sm">
+            Manual Mode?
           </FormLabel>
           <Switch
-            id="offline"
+            id="manual"
             mb="0"
             size="sm"
-            onChange={() => setOffline(!offline)}
+            onChange={() => setManual(!manual)}
+            isChecked={manual}
           />
         </Box>
       </Flex>
@@ -28,25 +29,25 @@ export default function cardgames(): ReactElement {
           name="Blackjack"
           icon="/imgs/blackjack.png"
           description="A simple, but fun, 2 card game!"
-          linkurl={`/games/blackjack?offline=${offline}`}
+          linkurl={`/games/blackjack?manual=${manual}`}
         />
         <BoxItem
           name="Texas Hold 'Em"
           icon="/imgs/poker.png"
           description="A very popular variation of poker!"
-          linkurl={`/games/poker?offline=${offline}`}
+          linkurl={`/games/poker?manual=${manual}`}
         />
         <BoxItem
           name="Two up"
           icon="/imgs/coin.png"
           description="A popular Australian coin game!"
-          linkurl={`/games/twoup?offline=${offline}`}
+          linkurl={`/games/twoup?manual=${manual}`}
         />
         <BoxItem
           name="Acey Deucy"
           icon="/imgs/playing-card.png"
           description="A simple, card guessing game!"
-          linkurl={`/games/aceydeucy?offline=${offline}`}
+          linkurl={`/games/aceydeucy?manual=${manual}`}
         />
       </SimpleGrid>
     </Hero>
