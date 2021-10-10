@@ -10,16 +10,12 @@ import {
 } from "@chakra-ui/layout";
 import { Button } from "@chakra-ui/react";
 import React, { ReactElement, useState, useEffect } from "react";
-import {
-  FaceNums,
-  FaceValues,
-  offlineResults,
-  User,
-} from "../../../interfaces/app";
+import { FaceNums, offlineResults, User } from "../../../interfaces/app";
 import { getMax, getValue, initCards } from "../../../utils/games/general";
 import { printReport } from "../../../utils/report";
 import Card from "../../Helpers/Card";
 import BetAmount from "./BetAmount";
+import ManualStats from "./ManualStats";
 
 interface Props {
   user: User;
@@ -200,64 +196,12 @@ export default function Blackjack({ user }: Props): ReactElement {
               </VStack>
             </Center>
           </Box>
-          <VStack alignItems="flex-start">
-            <Heading textDecoration="underline" mb="2">
-              Stats:
-            </Heading>
-
-            <span>
-              <Heading fontSize="md" display="inline-block">
-                Games Played:
-              </Heading>{" "}
-              <Text display="inline-block" fontSize="md">
-                {runningResults.length}
-              </Text>
-            </span>
-            <span>
-              <Heading fontSize="md" display="inline-block">
-                Games Won:
-              </Heading>{" "}
-              <Text display="inline-block" fontSize="md">
-                {
-                  runningResults.filter(
-                    (hand) => hand.winningHands[0].winner === "P"
-                  ).length
-                }
-              </Text>
-            </span>
-            <span>
-              <Heading fontSize="md" display="inline-block">
-                Session Earnings:
-              </Heading>{" "}
-              <Text
-                display="inline-block"
-                textColor={runningTotal < 0 ? "red.600" : "green.600"}
-                fontSize="md"
-              >
-                ${runningTotal}
-              </Text>
-            </span>
-            <span>
-              <Heading fontSize="md" display="inline-block">
-                Bank Balance:
-              </Heading>{" "}
-              <Text
-                display="inline-block"
-                textColor={bank < 0 ? "red.600" : "green.600"}
-                fontSize="md"
-              >
-                ${bank}
-              </Text>
-            </span>
-            {showResult &&
-              runningResults.length > 0 &&
-              (runningResults[runningResults.length - 1].winningHands[0]
-                .winner === "P" ? (
-                <Text textColor="green.600">Yay! You won</Text>
-              ) : (
-                <Text textColor="red.600">Unlucky. You lost</Text>
-              ))}
-          </VStack>
+          <ManualStats
+            runningResults={runningResults}
+            runningTotal={runningTotal}
+            showResult={showResult}
+            bank={bank}
+          />
         </HStack>
         <Flex w="full" justifyContent="flex-end" mt="4">
           <Button
