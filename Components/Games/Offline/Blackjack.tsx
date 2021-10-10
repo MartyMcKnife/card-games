@@ -11,6 +11,7 @@ import {
 import { Button } from "@chakra-ui/react";
 import React, { ReactElement, useState, useEffect } from "react";
 import { FaceNums, offlineResults, User } from "../../../interfaces/app";
+import { updateBalance } from "../../../utils/firebase/firestore";
 import { getMax, getValue, initCards } from "../../../utils/games/general";
 import { printReport } from "../../../utils/report";
 import Card from "../../Helpers/Card";
@@ -102,46 +103,37 @@ export default function Blackjack({ user }: Props): ReactElement {
       const pAceCheck = (getValue(pCards, null, 10) as number[]).includes(1);
       //If we have an ace high, we can use this to calculate it
       const pHighVal = pAceCheck ? pVal + 10 : pVal;
-      console.log(dHand, dVal, dHighVal, pCards, pVal, pHighVal);
+      //Assume loss
+      let bet = -betAmount;
+      let winner = "D";
+      let winningHand = dHand;
+      //Check if won
       if (
         dVal > 21 ||
         getMax([pVal, pHighVal], 21) > getMax([dVal, dHighVal], 21)
       ) {
-        setRunningTotal(runningTotal + betAmount);
-        setBank(bank + betAmount);
-        setRunningResults([
-          ...runningResults,
-          {
-            gain: betAmount,
-            winningHands: [
-              {
-                earnings: betAmount,
-                hand: pCards.join(", "),
-                winner: "P",
-              },
-            ],
-          },
-        ]);
-      } else {
-        setRunningTotal(runningTotal - betAmount);
-        setBank(bank - betAmount);
-        setRunningResults([
-          ...runningResults,
-          {
-            gain: -betAmount,
-            winningHands: [
-              {
-                earnings: -betAmount,
-                hand: pCards.join(", "),
-                winner: "D",
-              },
-            ],
-          },
-        ]);
+        bet = betAmount;
+        winner = "P";
+        winningHand = pCards;
       }
+      setRunningTotal(runningTotal + bet);
+      setBank(bank + bet);
+      setRunningResults([
+        ...runningResults,
+        {
+          gain: bet,
+          winningHands: [
+            {
+              earnings: bet,
+              hand: winningHand.join(", "),
+              winner,
+            },
+          ],
+        },
+      ]);
+      updateBalance(user.userID, bank + bet);
     }
     setShowResult(true);
-    console.log(runningResults);
   }, [stand]);
 
   //Dealing cards takes time
