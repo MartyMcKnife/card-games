@@ -7,7 +7,7 @@ import Hero from "../../Components/Helpers/Hero";
 import OfflineGame from "../../Components/Games/Offline/Game";
 import FullPageLoading from "../../Components/Helpers/FullPageLoading";
 import Blackjack from "../../Components/Games/Offline/Blackjack";
-import Poker from "../../Components/Games/Offline/Blackjack";
+import Poker from "../../Components/Games/Offline/Poker/Poker";
 
 export default function blackjack(): ReactElement {
   const [settings, setSettings] = useState<offlineOptions>({
