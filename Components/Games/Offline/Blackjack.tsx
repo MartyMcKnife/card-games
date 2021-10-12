@@ -34,6 +34,7 @@ export default function Blackjack({ user }: Props): ReactElement {
   const [stand, setStand] = useState(false);
   const [bust, setBust] = useState(false);
   const [dTurn, setDTurn] = useState(false);
+  const [gameEnd, setGameEnd] = useState(false);
 
   //Recording
   const [runningTotal, setRunningTotal] = useState(0);
@@ -56,6 +57,7 @@ export default function Blackjack({ user }: Props): ReactElement {
       setBust(false);
       setDTurn(false);
       setShowResult(false);
+      setGameEnd(false);
     }
     setRestart(false);
   }, [restart]);
@@ -72,7 +74,7 @@ export default function Blackjack({ user }: Props): ReactElement {
       const newHand = [...pCards, ...dealCards(1)];
       setPCards(newHand);
       const val = getValue(newHand, true, 10) as number;
-
+      // Check to see if busted
       if (val > 21) {
         setBust(true);
         setStand(true);
@@ -89,8 +91,8 @@ export default function Blackjack({ user }: Props): ReactElement {
       let dAceCheck = (getValue(dHand, null, 10) as number[]).includes(1);
       //If we have an ace high, we can use this to calculate it
       let dHighVal = dAceCheck ? dVal + 10 : dVal;
-
-      while (dHighVal < 17 && dVal < 17) {
+      //Loop until dealer's cards are below 17
+      while (dHighVal < 17 || dVal < 17) {
         dHand = [...dCards, ...dealCards(1)];
         dVal = getValue(dHand, true, 10) as number;
         dAceCheck = (getValue(dHand, null, 10) as number[]).includes(1);
@@ -132,8 +134,9 @@ export default function Blackjack({ user }: Props): ReactElement {
         },
       ]);
       updateBalance(user.userID, bank + bet);
+      setShowResult(true);
+      setGameEnd(true);
     }
-    setShowResult(true);
   }, [stand]);
 
   //Dealing cards takes time
@@ -173,10 +176,16 @@ export default function Blackjack({ user }: Props): ReactElement {
                 </HStack>
                 <HStack>
                   {" "}
-                  <Button onClick={() => setHit(true)} isDisabled={bust}>
+                  <Button
+                    onClick={() => setHit(true)}
+                    isDisabled={bust || gameEnd}
+                  >
                     Hit
                   </Button>
-                  <Button onClick={() => setStand(true)} isDisabled={bust}>
+                  <Button
+                    onClick={() => setStand(true)}
+                    isDisabled={bust || gameEnd}
+                  >
                     Stand
                   </Button>
                 </HStack>
@@ -201,7 +210,7 @@ export default function Blackjack({ user }: Props): ReactElement {
             onClick={() => setUpdateBetAmount(true)}
             mr="4"
           >
-            Change Settings
+            Change Bet
           </Button>
           <Button
             colorScheme="green"
@@ -225,6 +234,7 @@ export default function Blackjack({ user }: Props): ReactElement {
           setBetAmount={setBetAmount}
           isOpen={isOpen}
           onClose={onClose}
+          betAmount={betAmount}
         />
       </>
     );

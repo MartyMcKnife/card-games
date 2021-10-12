@@ -30,8 +30,6 @@ export default function blackjack(): ReactElement {
   } else {
     return (
       <>
-        {console.log(play, simulate)}
-
         <ScaleFade in={!simulate} hidden={simulate} initialScale={0.8}>
           {!play && (
             <OfflineSetup setSettings={setSettings} setContinue={setSimulate} />

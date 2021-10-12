@@ -23,12 +23,14 @@ interface Props {
   setBetAmount: React.Dispatch<React.SetStateAction<number>>;
   isOpen: boolean;
   onClose: () => void;
+  betAmount: number;
 }
 
 export default function BetAmount({
   setBetAmount,
   isOpen,
   onClose,
+  betAmount,
 }: Props): ReactElement {
   return (
     <>
@@ -45,6 +47,7 @@ export default function BetAmount({
               onChange={(str, num) => {
                 setBetAmount(num);
               }}
+              value={betAmount}
             >
               <NumberInputField />
               <NumberInputStepper>
