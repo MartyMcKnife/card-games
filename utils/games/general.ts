@@ -109,3 +109,16 @@ export const getMax = (nums: number[], max: number = 0) => {
   }
   return Math.max(...numbers);
 };
+
+export const turnToTable = (turn: number) => {
+  switch (turn) {
+    case 1:
+      return 3;
+    case 2:
+      return 4;
+    case 3:
+      return 5;
+    default:
+      return 0;
+  }
+};

@@ -1,7 +1,7 @@
 import { Button } from "@chakra-ui/button";
 import { Flex, Heading, HStack, Text, VStack } from "@chakra-ui/layout";
 import { Fade } from "@chakra-ui/transition";
-import React, { ReactElement, useState } from "react";
+import React, { ReactElement, useState, useEffect } from "react";
 import { FaceNums } from "../../../../interfaces/app";
 import Card from "../../../Helpers/Card";
 import {
@@ -10,6 +10,9 @@ import {
   SliderFilledTrack,
   SliderThumb,
 } from "@chakra-ui/react";
+import { processHand, turnToTable } from "../../../../utils/games/general";
+import * as ps from "pokersolver";
+const Hand = ps.Hand;
 
 interface Props {
   setPlayer: React.Dispatch<
@@ -17,6 +20,7 @@ interface Props {
       cards: FaceNums[];
       bet: number;
       turn: boolean;
+      turns: number;
       reveal: boolean;
       out: boolean;
     }>
@@ -25,12 +29,15 @@ interface Props {
     cards: FaceNums[];
     bet: number;
     turn: boolean;
+    turns: number;
     reveal: boolean;
     out: boolean;
   };
   ai: boolean;
   name?: string;
   advance: React.Dispatch<React.SetStateAction<boolean>>;
+  tableCards: { card: FaceNums; show: boolean }[];
+  maxBet: number;
 }
 
 export default function Player({
@@ -39,10 +46,47 @@ export default function Player({
   ai,
   name,
   advance,
+  tableCards,
+  maxBet,
 }: Props): ReactElement {
   const [raise, setRaise] = useState(false);
   const [raiseAmount, setRaiseAmount] = useState(50);
+  const [call, setCall] = useState(false);
+  useEffect(() => {
+    if (player.turn && ai) {
+      //Check how many cards are up on the table
+      const showCards = turnToTable(player.turns);
+      const table = tableCards.map((card, i) => {
+        if (i < showCards) {
+          return card.card;
+        }
+      });
+      const hand = [...player.cards, ...table];
+      console.log(player.cards, table, hand);
 
+      const processedHand = processHand(hand);
+      const solved = Hand.solve(processedHand);
+      if (player.bet < maxBet && solved.rank > 0) {
+        //Always call if good hand
+        setPlayer({ ...player, bet: maxBet });
+      } else if (solved.rank > 0) {
+        //Raise if good hand
+        setPlayer({
+          ...player,
+          bet: player.bet + Math.round(Math.random() * 50),
+        });
+      } else if (player.turns > 0) {
+        //Fold if we haven't gotten a good hand yet
+        setPlayer({ ...player, out: true });
+      }
+      advance(true);
+    }
+  }, [ai, player]);
+  useEffect(() => {
+    if (player.bet !== maxBet) {
+      setCall(true);
+    }
+  }, [maxBet]);
   return (
     <VStack>
       <Heading fontSize="2xl">{name || "Player"}'s Cards</Heading>
@@ -56,8 +100,18 @@ export default function Player({
       </HStack>
       {!ai && (
         <HStack>
-          <Button isDisabled={player.out} onClick={() => setRaise(!raise)}>
-            Raise
+          <Button
+            isDisabled={player.out}
+            onClick={() => {
+              if (call) {
+                setPlayer({ ...player, bet: maxBet });
+                advance(true);
+              } else {
+                setRaise(!raise);
+              }
+            }}
+          >
+            {call ? "Call" : "Raise"}
           </Button>
           <Button onClick={() => advance(true)} isDisabled={player.out}>
             Check
@@ -90,7 +144,10 @@ export default function Player({
           </Slider>
           <Button
             onClick={() => {
-              setPlayer({ ...player, bet: player.bet + raiseAmount });
+              setPlayer({
+                ...player,
+                bet: player.bet + raiseAmount,
+              });
               advance(true);
             }}
             variant="outline"
