@@ -7,8 +7,8 @@ interface Props {
 
 export default function Hero({ children }: Props): ReactElement {
   return (
-    <Box bgColor="gray.50" minHeight="screen-h" width="auto">
-      <Flex justify="center" alignItems="center" height="full">
+    <Box bgColor="gray.50" minHeight="screen-h" w="screen-w">
+      <Flex justify="center" alignItems="center" minH="screen-h">
         <Box
           shadow="lg"
           alignItems="center"

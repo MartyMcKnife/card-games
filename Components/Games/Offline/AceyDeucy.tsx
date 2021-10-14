@@ -36,6 +36,7 @@ export default function AceyDeucy({ user }: Props): ReactElement {
   useEffect(() => {
     if (showThird) {
       //Get first 2 cards
+      console.log(cards.slice(0, 2));
       const upCardsV = getValue(cards.slice(0, 2)) as number[];
       const big = Math.max(...upCardsV);
       const small = Math.min(...upCardsV);
@@ -43,9 +44,9 @@ export default function AceyDeucy({ user }: Props): ReactElement {
       let earnings = -betAmount;
       let winner = "D";
 
-      let thirdV = getValue(cards[0]) as number;
+      let thirdV = getValue(cards[2]) as number;
 
-      if (thirdV > small && thirdV < big) {
+      if (thirdV >= small && thirdV <= big) {
         earnings = betAmount;
         winner = "P";
       }
@@ -72,33 +73,24 @@ export default function AceyDeucy({ user }: Props): ReactElement {
 
   useEffect(() => {
     if (restart) {
+      setCards(dealCards(3));
+      setBetAmount(0);
+      setShowThird(false);
       setRestart(false);
       setShowResult(false);
-      setShowThird(false);
-      setCards(dealCards(3));
-      setBetAmount(0);
-    }
-  }, [restart]);
-
-  useEffect(() => {
-    if (restart) {
-      setCards(dealCards(3));
-      setBetAmount(0);
-      setShowThird(false);
-      setRestart(false);
     }
   }, [restart]);
   return (
     <>
-      <HStack>
+      <HStack justifyContent="space-between">
         <VStack>
           <Heading>Cards</Heading>
-          <HStack>
+          <HStack pb="4">
             <Card cardValue={cards[0]} />
             <Card cardValue={showThird ? cards[2] : "gray_back"} />
             <Card cardValue={cards[1]} />
           </HStack>
-          <HStack>
+          <HStack alignItems="flex-end">
             <div>
               <FormLabel>Bet:</FormLabel>
               <NumberInput
@@ -124,7 +116,7 @@ export default function AceyDeucy({ user }: Props): ReactElement {
           showResult={showResult}
         />
       </HStack>
-      <Flex>
+      <Flex justifyContent="flex-end" mt="4">
         <Button
           colorScheme="green"
           onClick={() => {
