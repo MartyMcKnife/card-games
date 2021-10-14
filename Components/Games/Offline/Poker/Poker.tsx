@@ -1,4 +1,4 @@
-import { Center, HStack, SimpleGrid, VStack } from "@chakra-ui/layout";
+import { Center, Flex, HStack, SimpleGrid, VStack } from "@chakra-ui/layout";
 import { name } from "faker";
 import React, { ReactElement, useState, useEffect } from "react";
 import { FaceNums, offlineResults, User } from "../../../../interfaces/app";
@@ -7,6 +7,9 @@ import Card from "../../../Helpers/Card";
 import Player from "./Player";
 import * as ps from "pokersolver";
 import { updateBalance } from "../../../../utils/firebase/firestore";
+import ManualStats from "../ManualStats";
+import { printReport } from "../../../../utils/report";
+import { Button } from "@chakra-ui/button";
 const Hand = ps.Hand;
 
 interface Props {
@@ -16,6 +19,7 @@ interface Props {
 export default function Poker({ user }: Props): ReactElement {
   //Handlers for games
   const dealCards = initCards();
+  //#region - Player setups
   const [p1, setP1] = useState({
     cards: dealCards(2),
     bet: 0,
@@ -23,6 +27,7 @@ export default function Poker({ user }: Props): ReactElement {
     turns: 0,
     reveal: true,
     out: false,
+    name: "Player",
   });
   const [p2, setP2] = useState({
     cards: dealCards(2),
@@ -31,6 +36,7 @@ export default function Poker({ user }: Props): ReactElement {
     turns: 0,
     reveal: false,
     out: false,
+    name: name.firstName(),
   });
   const [p3, setP3] = useState({
     cards: dealCards(2),
@@ -39,6 +45,7 @@ export default function Poker({ user }: Props): ReactElement {
     turns: 0,
     reveal: false,
     out: false,
+    name: name.firstName(),
   });
   const [p4, setP4] = useState({
     cards: dealCards(2),
@@ -47,25 +54,31 @@ export default function Poker({ user }: Props): ReactElement {
     turns: 0,
     reveal: false,
     out: false,
+    name: name.firstName(),
   });
   //make us able to search an array of players
   const players = [p1, p2, p3, p4];
   const setPlayers = [setP1, setP2, setP3, setP4];
+  //#endregion
+
   //Generate our cards
-  const cardArr = Array.from({ length: 5 }, function () {
-    return { card: dealCards(1).join() as FaceNums, show: false };
-  });
-  const [table, setTable] = useState(cardArr);
+  const [table, setTable] = useState(
+    Array.from({ length: 5 }, function () {
+      return { card: dealCards(1).join("") as FaceNums, show: false };
+    })
+  );
   const [advance, setAdvance] = useState(false);
+  const [getTurn, setGetTurn] = useState(false);
   const [maxBet, setMaxBet] = useState(0);
   const [restart, setRestart] = useState(false);
   const [end, setEnd] = useState(false);
 
-  //Recording
+  //#region - Recording
   const [runningTotal, setRunningTotal] = useState(0);
   const [runningResults, setRunningResults] = useState<offlineResults[]>([]);
   const [bank, setBank] = useState(user.balance);
   const [showResult, setShowResult] = useState(false);
+  //#endregion
 
   //Advance to next player
   useEffect(() => {
@@ -92,54 +105,59 @@ export default function Poker({ user }: Props): ReactElement {
         turns: players[curI].turns + 1,
       });
       setAdvance(false);
+      setGetTurn(true);
     }
   }, [advance]);
   //Reveal the cards
   useEffect(() => {
-    const inPlayers = players.filter((player) => player.out === false);
-    //Get the turn we are on - calculated from turns numbers, and getting the smallest
-    const turnNo = Math.min(...inPlayers.map((player) => player.turns));
-
-    switch (turnNo) {
-      //Reveal first 3
-      case 1:
-        const three = table.map((card, i) => {
-          if (i < 3) {
+    if (getTurn) {
+      setGetTurn(false);
+      const inPlayers = players.filter((player) => player.out === false);
+      //Get the turn we are on - calculated from turns numbers, and getting the smallest
+      const turnNo = Math.min(...inPlayers.map((player) => player.turns));
+      console.log(turnNo);
+      switch (turnNo) {
+        //Reveal first 3
+        case 1:
+          const three = table.map((card, i) => {
+            if (i < 3) {
+              return { card: card.card, show: true };
+            } else {
+              return { card: card.card, show: false };
+            }
+          });
+          setTable(three);
+          break;
+        //Reveal first 4
+        case 2:
+          const four = table.map((card, i) => {
+            if (i < 4) {
+              return { card: card.card, show: true };
+            } else {
+              return { card: card.card, show: false };
+            }
+          });
+          setTable(four);
+          break;
+        //Reveal all
+        case 3:
+          const all = table.map((card, i) => {
             return { card: card.card, show: true };
-          } else {
-            return { card: card.card, show: false };
-          }
-        });
-        setTable(three);
-      //Reveal first 4
-      case 2:
-        const four = table.map((card, i) => {
-          if (i < 3) {
-            return { card: card.card, show: true };
-          } else {
-            return { card: card.card, show: false };
-          }
-        });
-        setTable(four);
-      //Reveal all
-      case 3:
-        const all = table.map((card, i) => {
-          if (i < 3) {
-            return { card: card.card, show: true };
-          } else {
-            return { card: card.card, show: false };
-          }
-        });
-        setTable(all);
-      case 4:
-        //Game End. Reveal all
-        setPlayers.forEach((setPlayer, i) => {
-          setPlayer({ ...players[i], reveal: true });
-        });
-        setEnd(true);
-      //Default
-      default:
-        return;
+          });
+          setTable(all);
+          break;
+        case 4:
+          //Game End. Reveal all
+          setPlayers.forEach((setPlayer, i) => {
+            setPlayer({ ...players[i], reveal: true });
+          });
+          setEnd(true);
+          break;
+        //Default
+        default:
+          return;
+          break;
+      }
     }
   }, [players]);
   //Player handlers
@@ -157,8 +175,9 @@ export default function Poker({ user }: Props): ReactElement {
         } else {
           result.type = "AI";
         }
+        return result;
       });
-      const winnerObj = Hand.winner(results);
+      const winnerObj = Hand.winners(results);
 
       let pool = players.reduce((a, b) => a + b["bet"], 0);
       let earnings = pool;
@@ -200,6 +219,7 @@ export default function Poker({ user }: Props): ReactElement {
           turns: 0,
           reveal: player,
           out: false,
+          name: name.firstName(),
         });
       });
       const cardArr = Array.from({ length: 5 }).map(() => {
@@ -212,52 +232,76 @@ export default function Poker({ user }: Props): ReactElement {
 
   return (
     <>
-      <VStack>
-        <HStack spacing="24px">
+      <HStack>
+        <VStack>
+          <HStack spacing="24px">
+            <Player
+              player={p2}
+              setPlayer={setP2}
+              ai={true}
+              advance={setAdvance}
+              tableCards={table}
+              maxBet={maxBet}
+            />
+            <Player
+              player={p3}
+              setPlayer={setP3}
+              ai={true}
+              advance={setAdvance}
+              tableCards={table}
+              maxBet={maxBet}
+            />
+            <Player
+              player={p4}
+              setPlayer={setP4}
+              ai={true}
+              advance={setAdvance}
+              tableCards={table}
+              maxBet={maxBet}
+            />
+          </HStack>
+          <HStack spacing="12px" my="8">
+            {table.map((card, i) => {
+              return (
+                <Card cardValue={card.show ? card.card : "red_back"} key={i} />
+              );
+            })}
+          </HStack>
           <Player
-            player={p2}
-            setPlayer={setP2}
-            ai={true}
-            name={name.firstName()}
+            player={p1}
+            setPlayer={setP1}
+            ai={false}
             advance={setAdvance}
             tableCards={table}
             maxBet={maxBet}
           />
-          <Player
-            player={p3}
-            setPlayer={setP3}
-            ai={true}
-            name={name.firstName()}
-            advance={setAdvance}
-            tableCards={table}
-            maxBet={maxBet}
-          />
-          <Player
-            player={p4}
-            setPlayer={setP4}
-            ai={true}
-            name={name.firstName()}
-            advance={setAdvance}
-            tableCards={table}
-            maxBet={maxBet}
-          />
-        </HStack>
-        <HStack spacing="12px" my="8">
-          {table.map((card, i) => {
-            return (
-              <Card cardValue={card.show ? card.card : "red_back"} key={i} />
-            );
-          })}
-        </HStack>
-        <Player
-          player={p1}
-          setPlayer={setP1}
-          ai={false}
-          advance={setAdvance}
-          tableCards={table}
-          maxBet={maxBet}
+        </VStack>
+        <ManualStats
+          bank={bank}
+          runningResults={runningResults}
+          runningTotal={runningTotal}
+          showResult={showResult}
         />
-      </VStack>
+      </HStack>
+      <Flex w="full" justifyContent="flex-end">
+        <Button
+          colorScheme="green"
+          onClick={() => {
+            printReport(runningTotal, runningResults, bank);
+          }}
+          mr="4"
+        >
+          Print Report?
+        </Button>
+        <Button
+          colorScheme="blue"
+          onClick={() => {
+            setRestart(true);
+          }}
+        >
+          Play Again?
+        </Button>
+      </Flex>
     </>
   );
 }

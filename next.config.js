@@ -10,6 +10,7 @@ const withTM = require("next-transpile-modules")([
   "d3-format",
   "d3-time",
   "d3-time-format",
+  "random-seedable",
 ]);
 
 module.exports = withTM({ webpack5: false });

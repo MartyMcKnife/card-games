@@ -11,6 +11,7 @@ import {
   SliderThumb,
 } from "@chakra-ui/react";
 import { processHand, turnToTable } from "../../../../utils/games/general";
+import random from "random-seedable";
 import * as ps from "pokersolver";
 const Hand = ps.Hand;
 
@@ -23,6 +24,7 @@ interface Props {
       turns: number;
       reveal: boolean;
       out: boolean;
+      name: string;
     }>
   >;
   player: {
@@ -32,9 +34,9 @@ interface Props {
     turns: number;
     reveal: boolean;
     out: boolean;
+    name: string;
   };
   ai: boolean;
-  name?: string;
   advance: React.Dispatch<React.SetStateAction<boolean>>;
   tableCards: { card: FaceNums; show: boolean }[];
   maxBet: number;
@@ -44,7 +46,7 @@ export default function Player({
   player,
   setPlayer,
   ai,
-  name,
+
   advance,
   tableCards,
   maxBet,
@@ -56,13 +58,14 @@ export default function Player({
     if (player.turn && ai) {
       //Check how many cards are up on the table
       const showCards = turnToTable(player.turns);
-      const table = tableCards.map((card, i) => {
-        if (i < showCards) {
-          return card.card;
-        }
-      });
+      const table = tableCards
+        .map((card, i) => {
+          if (i < showCards) {
+            return card.card;
+          }
+        })
+        .filter((card) => card !== undefined);
       const hand = [...player.cards, ...table];
-      console.log(player.cards, table, hand);
 
       const processedHand = processHand(hand);
       const solved = Hand.solve(processedHand);
@@ -73,7 +76,7 @@ export default function Player({
         //Raise if good hand
         setPlayer({
           ...player,
-          bet: player.bet + Math.round(Math.random() * 50),
+          bet: player.bet + random.randRange(1, 150),
         });
       } else if (player.turns > 0) {
         //Fold if we haven't gotten a good hand yet
@@ -89,7 +92,7 @@ export default function Player({
   }, [maxBet]);
   return (
     <VStack>
-      <Heading fontSize="2xl">{name || "Player"}'s Cards</Heading>
+      <Heading fontSize="2xl">{player.name || "Player"}'s Cards</Heading>
       <HStack>
         <Card cardValue={player.reveal ? player.cards[0] : "gray_back"} />
         <Card cardValue={player.reveal ? player.cards[1] : "gray_back"} />
@@ -113,7 +116,7 @@ export default function Player({
           >
             {call ? "Call" : "Raise"}
           </Button>
-          <Button onClick={() => advance(true)} isDisabled={player.out}>
+          <Button onClick={() => advance(true)} isDisabled={player.out || call}>
             Check
           </Button>
           <Button
@@ -148,10 +151,11 @@ export default function Player({
                 ...player,
                 bet: player.bet + raiseAmount,
               });
+              setRaise(true);
               advance(true);
             }}
             variant="outline"
-            size="sm"
+            size="xs"
           >
             Raise!
           </Button>

@@ -1422,6 +1422,13 @@
   resolved "https://registry.yarnpkg.com/@types/aria-query/-/aria-query-4.2.2.tgz#ed4e0ad92306a704f9fb132a0cfcf77486dbe2bc"
   integrity sha512-HnYpAE1Y6kRyKM/XkEuiRQhTHvkzMBurTHnpFLYLBGPIylZNPs9jJcuOOYWxPLJCSEtmZT0Y8rHDokKN7rRTig==
 
+"@types/brorand@^1.0.30":
+  version "1.0.30"
+  resolved "https://registry.yarnpkg.com/@types/brorand/-/brorand-1.0.30.tgz#36669854509d770e13037c5804cc8095fc1ca2bb"
+  integrity sha1-NmaYVFCddw4TA3xYBMyAlfwcors=
+  dependencies:
+    "@types/node" "*"
+
 "@types/d3-color@*":
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/@types/d3-color/-/d3-color-3.0.2.tgz#53f2d6325f66ee79afd707c05ac849e8ae0edbb0"
@@ -3782,6 +3789,11 @@ raf@^3.4.0, raf@^3.4.1:
   integrity sha512-Sq4CW4QhwOHE8ucn6J34MqtZCeWFP2aQSmrlroYgqAV1PjStIhJXxYuTgUIfkEk7zTLjmIjLmU5q+fbD1NnOJA==
   dependencies:
     performance-now "^2.1.0"
+
+random-seedable@^1.0.8:
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/random-seedable/-/random-seedable-1.0.8.tgz#d233ce5d49f64a20be398bbc3faa695cc39b8aa8"
+  integrity sha512-f6gzvNhAnZBht1Prn0e/tpukUNhkANntFF42uIdWDPriyEATYaRpyH8A9bYaGecUB3AL+dXeYtBUggy18fe3rw==
 
 randombytes@^2.0.0, randombytes@^2.0.1, randombytes@^2.0.5:
   version "2.1.0"
