@@ -46,7 +46,6 @@ export default function Player({
   player,
   setPlayer,
   ai,
-
   advance,
   tableCards,
   maxBet,
@@ -55,7 +54,7 @@ export default function Player({
   const [raiseAmount, setRaiseAmount] = useState(50);
   const [call, setCall] = useState(false);
   useEffect(() => {
-    if (player.turn && ai) {
+    if (player.turn && ai && player.turns < 4) {
       //Check how many cards are up on the table
       const showCards = turnToTable(player.turns);
       const table = tableCards
@@ -69,10 +68,10 @@ export default function Player({
 
       const processedHand = processHand(hand);
       const solved = Hand.solve(processedHand);
-      if (player.bet < maxBet && solved.rank > 0) {
+      if (player.bet < maxBet && solved.rank > 1) {
         //Always call if good hand
         setPlayer({ ...player, bet: maxBet });
-      } else if (solved.rank > 0) {
+      } else if (solved.rank > 1) {
         //Raise if good hand
         setPlayer({
           ...player,
@@ -151,7 +150,7 @@ export default function Player({
                 ...player,
                 bet: player.bet + raiseAmount,
               });
-              setRaise(true);
+              setRaise(false);
               advance(true);
             }}
             variant="outline"

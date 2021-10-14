@@ -156,7 +156,6 @@ export default function Poker({ user }: Props): ReactElement {
         //Default
         default:
           return;
-          break;
       }
     }
   }, [players]);
@@ -173,7 +172,7 @@ export default function Poker({ user }: Props): ReactElement {
         if (i === 0) {
           result.type = "P";
         } else {
-          result.type = "AI";
+          result.type = "D";
         }
         return result;
       });
@@ -183,9 +182,9 @@ export default function Poker({ user }: Props): ReactElement {
       let earnings = pool;
       let winner = "P";
 
-      if (winnerObj.type === "AI") {
+      if (winnerObj.type === "D") {
         earnings = -players[0].bet;
-        winner = "AI";
+        winner = "D";
       }
       setRunningTotal(runningTotal + earnings);
       setBank(bank + earnings);
@@ -219,7 +218,7 @@ export default function Poker({ user }: Props): ReactElement {
           turns: 0,
           reveal: player,
           out: false,
-          name: name.firstName(),
+          name: player ? "Player" : name.firstName(),
         });
       });
       const cardArr = Array.from({ length: 5 }).map(() => {
