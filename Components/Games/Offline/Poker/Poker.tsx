@@ -96,7 +96,7 @@ export default function Poker({ user }: Props): ReactElement {
         }
         console.log(nextI, players[nextI]);
       }
-
+      console.log(nextI, curI, players[curI], players[nextI]);
       //Set our next player!
       setPlayers[nextI]({ ...players[nextI], turn: true });
       //Remove our current player!
@@ -205,6 +205,7 @@ export default function Poker({ user }: Props): ReactElement {
         earnings = -players[0].bet;
         winner = "D";
       }
+      console.log(winnerObj.type, earnings, winner);
       setRunningTotal(runningTotal + earnings);
       setBank(bank + earnings);
       setRunningResults([

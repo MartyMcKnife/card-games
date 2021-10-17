@@ -4,9 +4,12 @@ import { Switch } from "@chakra-ui/switch";
 import React, { ReactElement, useState } from "react";
 import BoxItem from "../Components/BoxItem";
 import Hero from "../Components/Helpers/Hero";
+import { useToast } from "@chakra-ui/react";
 
 export default function cardgames(): ReactElement {
   const [manual, setManual] = useState(false);
+  const toast = useToast();
+
   return (
     <Hero>
       <Flex justifyContent="space-between" alignItems="center" width="full">
@@ -35,7 +38,18 @@ export default function cardgames(): ReactElement {
           name="Texas Hold 'Em"
           icon="/imgs/poker.png"
           description="A very popular variation of poker!"
-          linkurl={`/games/poker?manual=${manual}`}
+          linkurl={manual ? "" : `/games/poker?manual=${manual}`}
+          onClick={() => {
+            if (manual) {
+              toast({
+                title: "Manual mode is not available for Texas Hold 'Em",
+                status: "warning",
+                duration: 4000,
+                isClosable: true,
+                position: "bottom-right",
+              });
+            }
+          }}
         />
         <BoxItem
           name="Two up"

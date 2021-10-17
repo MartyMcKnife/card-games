@@ -1,5 +1,6 @@
 import React, { ReactElement } from "react";
 import { Box, Image, Text, Tooltip } from "@chakra-ui/react";
+import router from "next/router";
 
 interface Props {
   name: string;
@@ -23,7 +24,7 @@ export default function BoxItem({
       textAlign="center"
       onClick={onClick}
     >
-      <a href={linkurl}>
+      <a onClick={() => linkurl && router.push(linkurl)}>
         <Tooltip label={description} aria-label="A tooltip">
           <span tabIndex={0}>
             <Image
