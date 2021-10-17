@@ -9,6 +9,8 @@ import {
   VStack,
 } from "@chakra-ui/layout";
 import { Button } from "@chakra-ui/react";
+import { route } from "next/dist/server/router";
+import router from "next/router";
 import React, { ReactElement, useState, useEffect } from "react";
 import { FaceNums, offlineResults, User } from "../../../interfaces/app";
 import { updateBalance } from "../../../utils/firebase/firestore";
@@ -147,6 +149,15 @@ export default function Blackjack({ user }: Props): ReactElement {
   if (pCards.length > 0 && dCards.length > 0) {
     return (
       <>
+        <Flex w="full" justifyContent="flex-end">
+          <Button
+            justifySelf="flex-start"
+            onClick={() => router.push("/cardgames")}
+            size="xs"
+          >
+            Leave
+          </Button>
+        </Flex>
         <HStack
           spacing="24px"
           alignItems="flex-start"

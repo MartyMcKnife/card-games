@@ -15,6 +15,7 @@ import {
 } from "@chakra-ui/react";
 import ManualStats from "./ManualStats";
 import { printReport } from "../../../utils/report";
+import router from "next/router";
 
 interface Props {
   user: User;
@@ -81,6 +82,15 @@ export default function AceyDeucy({ user }: Props): ReactElement {
   }, [restart]);
   return (
     <>
+      <Flex w="full" justifyContent="flex-end">
+        <Button
+          justifySelf="flex-start"
+          onClick={() => router.push("/cardgames")}
+          size="xs"
+        >
+          Leave
+        </Button>
+      </Flex>
       <HStack justifyContent="space-between">
         <VStack>
           <Heading>Cards</Heading>

@@ -16,6 +16,7 @@ import { FormControl, FormLabel, Button } from "@chakra-ui/react";
 import ManualStats from "./ManualStats";
 import { printReport } from "../../../utils/report";
 import { Select } from "@chakra-ui/react";
+import router from "next/router";
 
 interface Props {
   user: User;
@@ -73,6 +74,15 @@ export default function Twoup({ user }: Props): ReactElement {
 
   return (
     <>
+      <Flex w="full" justifyContent="flex-end">
+        <Button
+          justifySelf="flex-start"
+          onClick={() => router.push("/cardgames")}
+          size="xs"
+        >
+          Leave
+        </Button>
+      </Flex>
       <Flex w="full" justifyContent="space-between" alignItems="center">
         <VStack>
           <HStack mb="4">
