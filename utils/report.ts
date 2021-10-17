@@ -22,6 +22,7 @@ export const printReport = (
       const winner = hands.winner === "P" ? "Player" : "Dealer";
       return [i + 1, winner, hands.hand, hands.earnings];
     });
+    //Get the end of the table, so the next table can be placed nicely
     const finalY: number = (doc as any).lastAutoTable.finalY || 40;
     doc.text(`Round #${i + 1}`, 14, finalY + 15);
     (doc as any).autoTable({

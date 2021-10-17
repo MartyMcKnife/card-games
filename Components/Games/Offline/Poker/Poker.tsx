@@ -115,7 +115,6 @@ export default function Poker({ user }: Props): ReactElement {
       const inPlayers = players.filter((player) => player.out === false);
       //Get the turn we are on - calculated from turns numbers, and getting the smallest
       const turnNo = Math.min(...inPlayers.map((player) => player.turns));
-      console.log(turnNo);
       switch (turnNo) {
         //Reveal first 3
         case 1:
@@ -147,7 +146,7 @@ export default function Poker({ user }: Props): ReactElement {
           setTable(all);
           break;
         case 4:
-          //Game End. Reveal all
+          //Game End. Reveal all player's cards
           setPlayers.forEach((setPlayer, i) => {
             setPlayer({ ...players[i], reveal: true });
           });
@@ -159,7 +158,7 @@ export default function Poker({ user }: Props): ReactElement {
       }
     }
   }, [players]);
-  //Player handlers
+  //Get max bet
   useEffect(() => {
     setMaxBet(Math.max(...players.map((player) => player.bet)));
   }, [players]);
@@ -167,8 +166,10 @@ export default function Poker({ user }: Props): ReactElement {
   useEffect(() => {
     if (end) {
       const tCards = table.map((t) => t.card);
+      //Calculate a solved results hand
       const results = players.map((player, i) => {
         let result = Hand.solve(processHand([...player.cards, ...tCards]));
+        //So we know whether the winner is the player, or AI
         if (i === 0) {
           result.type = "P";
         } else {
@@ -176,13 +177,16 @@ export default function Poker({ user }: Props): ReactElement {
         }
         return result;
       });
+      //Find the winner
       const winnerObj = Hand.winners(results);
-
+      //Calculate the pool
       let pool = players.reduce((a, b) => a + b["bet"], 0);
+      //Assume win
       let earnings = pool;
       let winner = "P";
 
       if (winnerObj.type === "D") {
+        //Update if not
         earnings = -players[0].bet;
         winner = "D";
       }
@@ -209,6 +213,7 @@ export default function Poker({ user }: Props): ReactElement {
   useEffect(() => {
     if (restart) {
       setRestart(false);
+      //Loop over every player, and reset their data
       setPlayers.map((setPlayer, i) => {
         const player = i === 0 ? true : false;
         setPlayer({

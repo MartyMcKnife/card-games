@@ -41,7 +41,7 @@ export default function Game({
       setBank(bank + results.gain);
       await updateBalance(uid, bank + results.gain);
       let dat = [];
-
+      //Generate the data for the graph
       results.winningHands.forEach((result) => {
         if (result.winner === "P") {
           const currentI = dat.findIndex(

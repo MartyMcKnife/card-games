@@ -34,6 +34,7 @@ export default function Login(): ReactElement {
   const handleLogin = async () => {
     setLoading(true);
     try {
+      //Check if username and password is inputted
       if (!email || !password) {
         setError({ message: "Email and Password is required!" });
         setLoading(false);
@@ -42,6 +43,7 @@ export default function Login(): ReactElement {
         await signInWithEmailAndPassword(auth, email, password);
         router.push("/");
       }
+      //If there is an error writing to firebase, let user know
     } catch (err: any) {
       const error: FirebaseError = err;
       setError({ message: getError(error.code) });

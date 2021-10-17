@@ -22,15 +22,17 @@ interface Props {
   >;
   provider: "google" | "github";
 }
-
+//Lookup table, as each provider has basically the same logic
 const lookup = {
   google: { provider: new GoogleAuthProvider(), icon: FaGoogle },
   github: { provider: new GithubAuthProvider(), icon: FaGithub },
 };
 
 export default function Google({ setError, provider }: Props): ReactElement {
+  //Get our provider
   const prov = lookup[provider]["provider"];
   const Icon = lookup[provider]["icon"];
+
   const router = useRouter();
   return (
     <Button
@@ -38,21 +40,15 @@ export default function Google({ setError, provider }: Props): ReactElement {
       colorScheme="blackAlpha"
       onClick={async () => {
         try {
+          //Signin our user with a popup
           const { user } = await signInWithPopup(auth, prov);
+          //If the user doesn't already exist in the database (i.e. they signed up with a different provider), add them
           if (!(await getUser(user.uid))) {
             await createUser({
               userID: user.uid,
               email: user.email,
               userName: user.displayName,
-              balance: {
-                "1000": 0,
-                "500": 0,
-                "100": 1,
-                "50": 5,
-                "20": 10,
-                "5": 15,
-                "1": 10,
-              },
+              balance: 500,
             });
           }
 

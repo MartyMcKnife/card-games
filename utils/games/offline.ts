@@ -67,6 +67,7 @@ const runTexas = (betAmount: number, alwaysBet: boolean): returnStruct => {
     const hand = Hand.solve(processHand(playerCardsCurrent));
     if (alwaysBet) {
       playerIn += betAmount;
+      //Bet if good hand
     } else if (hand.rank > 1) {
       playerIn += betAmount;
     }

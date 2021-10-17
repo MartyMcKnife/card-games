@@ -36,7 +36,6 @@ export default function AceyDeucy({ user }: Props): ReactElement {
   useEffect(() => {
     if (showThird) {
       //Get first 2 cards
-      console.log(cards.slice(0, 2));
       const upCardsV = getValue(cards.slice(0, 2)) as number[];
       const big = Math.max(...upCardsV);
       const small = Math.min(...upCardsV);

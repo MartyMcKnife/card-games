@@ -16,6 +16,7 @@ export default function Settings(): ReactElement {
   const [hundred, setHundred] = useState(false);
   const [thousand, setThousand] = useState(false);
   const { loading, user } = useAuth();
+  //Store a local copy of our balance, so we don't have to keep updating it
   const [bal, setBal] = useState(0);
   const handleSignOut = async () => {
     setLoading(true);

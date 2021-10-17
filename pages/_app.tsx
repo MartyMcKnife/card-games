@@ -8,6 +8,7 @@ const theme = extendTheme({
     "screen-h": "100vh",
   },
   fonts: {
+    //Custom fonts
     heading: "Noto Sans JP",
     body: "Noto Sans JP",
   },

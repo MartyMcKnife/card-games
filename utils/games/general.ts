@@ -16,6 +16,7 @@ const dealCard = (dealtCards: Array<FaceNums>, max?: number): FaceNums => {
   return card;
 };
 export const initCards = () => {
+  //Copy of all cards dealt, so we don't duplicate deal
   let dealtCards: Array<FaceNums> = [];
   return (cards: number, max?: number) => {
     let returnCards: Array<FaceNums> = [];

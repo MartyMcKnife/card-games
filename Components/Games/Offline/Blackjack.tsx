@@ -47,7 +47,7 @@ export default function Blackjack({ user }: Props): ReactElement {
   const [updateBetAmount, setUpdateBetAmount] = useState(true);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  //Deal our cards
+  //Restart the game
   useEffect(() => {
     if (restart) {
       setPCards(dealCards(2));
@@ -61,7 +61,7 @@ export default function Blackjack({ user }: Props): ReactElement {
     }
     setRestart(false);
   }, [restart]);
-
+  //If the player wants to change their bet
   useEffect(() => {
     if (updateBetAmount) {
       onOpen();
@@ -89,11 +89,11 @@ export default function Blackjack({ user }: Props): ReactElement {
       let dHand = dCards;
       let dVal = getValue(dHand, true, 10) as number;
       let dAceCheck = (getValue(dHand, null, 10) as number[]).includes(1);
-      //If we have an ace high, we can use this to calculate it
+      //If we have an ace high, we can use this to calculate it - it'll just be 10 more, if the ace is treated as 1
       let dHighVal = dAceCheck ? dVal + 10 : dVal;
       //Loop until dealer's cards are below 17
       while (dHighVal < 17 || dVal < 17) {
-        dHand = [...dCards, ...dealCards(1)];
+        dHand = [...dHand, ...dealCards(1)];
         dVal = getValue(dHand, true, 10) as number;
         dAceCheck = (getValue(dHand, null, 10) as number[]).includes(1);
         dHighVal = dAceCheck ? dVal + 10 : dVal;
@@ -111,8 +111,12 @@ export default function Blackjack({ user }: Props): ReactElement {
       let winningHand = dHand;
       //Check if won
       if (
+        //Dealer busted
         dVal > 21 ||
-        getMax([pVal, pHighVal], 21) > getMax([dVal, dHighVal], 21)
+        //Player value higher
+        getMax([pVal, pHighVal], 21) > getMax([dVal, dHighVal], 21) ||
+        //Player has less cards
+        pCards.length < dHand.length
       ) {
         bet = betAmount;
         winner = "P";

@@ -57,6 +57,7 @@ export default function Player({
     if (player.turn && ai && player.turns < 4) {
       //Check how many cards are up on the table
       const showCards = turnToTable(player.turns);
+      //And get them
       const table = tableCards
         .map((card, i) => {
           if (i < showCards) {
@@ -100,6 +101,7 @@ export default function Player({
         <Heading fontSize="lg">Bet:</Heading>
         <Text>{player.bet}</Text>
       </HStack>
+      {/* Only render the buttons if it's our player */}
       {!ai && (
         <HStack>
           <Button
