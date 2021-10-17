@@ -69,18 +69,26 @@ export default function Player({
 
       const processedHand = processHand(hand);
       const solved = Hand.solve(processedHand);
-      if (player.bet < maxBet && solved.rank > 1) {
-        //Always call if good hand
+      if (player.bet < maxBet && player.turns === 0) {
+        //Call first turn
         setPlayer({ ...player, bet: maxBet });
-      } else if (solved.rank > 1) {
-        //Raise if good hand
-        setPlayer({
-          ...player,
-          bet: player.bet + random.randRange(1, 150),
-        });
-      } else if (player.turns > 0) {
-        //Fold if we haven't gotten a good hand yet
-        setPlayer({ ...player, out: true });
+      } else {
+        if (player.bet < maxBet && solved.rank > 1) {
+          //Always call if good hand
+          setPlayer({ ...player, bet: maxBet });
+          console.log("call");
+        } else if (solved.rank > 1) {
+          //Raise if good hand
+          setPlayer({
+            ...player,
+            bet: player.bet + random.randRange(1, 150),
+          });
+          console.log("raise");
+        } else if (player.turns > 0) {
+          //Fold if we haven't gotten a good hand yet
+          setPlayer({ ...player, out: true });
+          console.log("fold");
+        }
       }
       advance(true);
     }

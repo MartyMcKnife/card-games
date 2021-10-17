@@ -89,13 +89,14 @@ export default function Poker({ user }: Props): ReactElement {
       let nextI = curI === players.length - 1 ? 0 : curI + 1;
 
       //Increment the index if it the next player has folded
-
       while (players[nextI].out === true) {
         nextI++;
         if (nextI === players.length - 1) {
           nextI = 0;
         }
+        console.log(nextI, players[nextI]);
       }
+
       //Set our next player!
       setPlayers[nextI]({ ...players[nextI], turn: true });
       //Remove our current player!
@@ -158,27 +159,41 @@ export default function Poker({ user }: Props): ReactElement {
       }
     }
   }, [players]);
-  //Get max bet
+  //Get max bet, and reveal if out
   useEffect(() => {
     setMaxBet(Math.max(...players.map((player) => player.bet)));
+    players.forEach((player, i) => {
+      if (player.out) {
+        setPlayers[i]({ ...player, reveal: true });
+      }
+    });
   }, [players]);
   //Game end
   useEffect(() => {
     if (end) {
       const tCards = table.map((t) => t.card);
       //Calculate a solved results hand
-      const results = players.map((player, i) => {
-        let result = Hand.solve(processHand([...player.cards, ...tCards]));
-        //So we know whether the winner is the player, or AI
-        if (i === 0) {
-          result.type = "P";
-        } else {
-          result.type = "D";
-        }
-        return result;
-      });
+      const results = players
+        .map((player, i) => {
+          let result = Hand.solve(processHand([...player.cards, ...tCards]));
+          //So we know whether the winner is the player, or AI
+          if (i === 0) {
+            result.type = "P";
+          } else {
+            result.type = "D";
+          }
+          // Only return if they are still in the game
+          if (!player.out) {
+            return result;
+          } else {
+            //Return out, which is then removed
+            return "OUT";
+          }
+        })
+        .filter((result) => result !== "OUT");
       //Find the winner
       const winnerObj = Hand.winners(results);
+      console.log(winnerObj);
       //Calculate the pool
       let pool = players.reduce((a, b) => a + b["bet"], 0);
       //Assume win
