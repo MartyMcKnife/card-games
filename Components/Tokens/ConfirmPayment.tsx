@@ -34,7 +34,7 @@ export default function ConfirmPayment({
   const router = useRouter();
   const handleClick = async () => {
     setLoading(true);
-    await updateBalance(userID, newBalance);
+    await updateBalance(userID, 500); //newBalance);
     setLoading(false);
     setOpen(false);
     router.push("/");

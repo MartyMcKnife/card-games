@@ -17,7 +17,7 @@ import FullPageLoading from "../../Helpers/FullPageLoading";
 import useAsyncEffect from "use-async-effect";
 import Seat from "../Online/Seat";
 import { calc } from "@chakra-ui/styled-system";
-import { calcBal } from "../../Landing";
+// import { calcBal } from "../../Landing";
 
 interface Props {
   code: string;
@@ -123,7 +123,7 @@ export default function Blackjack({ code, user }: Props): ReactElement {
         <Box position="absolute" left={x} top={y}>
           <Seat
             name={player.username}
-            bal={calcBal(player.bal)}
+            bal={500} //calcBal(player.bal)}
             active={curUID === player.userID ? true : false}
           />
         </Box>
