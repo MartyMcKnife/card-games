@@ -158,11 +158,7 @@ export default function Blackjack({ user }: Props): ReactElement {
             Leave
           </Button>
         </Flex>
-        <HStack
-          spacing="24px"
-          alignItems="flex-start"
-          justifyContent="space-between"
-        >
+        <HStack spacing="24px" justifyContent="space-between">
           <Box minW="60%">
             <Center>
               <VStack>

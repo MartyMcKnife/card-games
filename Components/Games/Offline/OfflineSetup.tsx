@@ -112,17 +112,23 @@ export default function OfflineSetup({
               </HStack>
             </FormControl>
           </ScaleFade>
-          <Flex justifyContent="flex-end" mt="4">
-            <Button
-              colorScheme="blue"
-              isLoading={loading}
-              loadingText="Submitting..."
-              type="submit"
-              onClick={handleSubmit}
-            >
-              Submit
-            </Button>
-          </Flex>
+          <ScaleFade
+            in={alwaysBetShow && betAmountShow}
+            initialScale={0.7}
+            hidden={!alwaysBetShow && !betAmountShow}
+          >
+            <Flex justifyContent="flex-end" mt="4">
+              <Button
+                colorScheme="blue"
+                isLoading={loading}
+                loadingText="Submitting..."
+                type="submit"
+                onClick={handleSubmit}
+              >
+                Submit
+              </Button>
+            </Flex>
+          </ScaleFade>
         </form>
       </Box>
     </Hero>
