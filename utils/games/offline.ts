@@ -155,7 +155,7 @@ const runAceydeucy = (betAmount: number, alwaysBet: boolean): returnStruct => {
       gain: bet,
       win: {
         winner: "P",
-        hand: [...cards, third].join(", "),
+        hand: [...(getValue(cards) as number[]), getValue(third)].join(", "),
       },
     };
   } else {

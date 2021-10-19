@@ -51,9 +51,9 @@ export default function OfflineSetup({
             <NumberInput
               value={sims}
               min={1}
-              max={100000}
+              max={10000}
               step={10}
-              keepWithinRange={true}
+              keepWithinRange
               isRequired
               onChange={(vs, vn) => {
                 setBetAmountShow(true);

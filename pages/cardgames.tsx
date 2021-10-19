@@ -7,7 +7,7 @@ import Hero from "../Components/Helpers/Hero";
 import { useToast } from "@chakra-ui/react";
 
 export default function cardgames(): ReactElement {
-  const [manual, setManual] = useState(false);
+  const [manual, setManual] = useState(true);
   const toast = useToast();
 
   return (
@@ -16,14 +16,14 @@ export default function cardgames(): ReactElement {
         <Heading>Games</Heading>
         <Box display="flex" alignItems="center">
           <FormLabel htmlFor="manual" mb="0" fontSize="sm">
-            Manual Mode?
+            Simulate Mode?
           </FormLabel>
           <Switch
             id="manual"
             mb="0"
             size="sm"
             onChange={() => setManual(!manual)}
-            isChecked={manual}
+            isChecked={!manual}
           />
         </Box>
       </Flex>
@@ -38,12 +38,12 @@ export default function cardgames(): ReactElement {
           name="Texas Hold 'Em"
           icon="/imgs/poker.png"
           description="A very popular variation of poker!"
-          linkurl={manual ? "" : `/games/poker?manual=${manual}`}
+          linkurl={manual ? "" : `/games/poker`}
           onClick={() => {
             if (manual) {
               toast({
-                title: "Manual mode is not available for Texas Hold 'Em",
-                status: "warning",
+                title: "You can only simulate Texas Hold 'Em!",
+                status: "error",
                 duration: 4000,
                 isClosable: true,
                 position: "bottom-right",

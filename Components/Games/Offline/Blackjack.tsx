@@ -234,6 +234,7 @@ export default function Blackjack({ user }: Props): ReactElement {
           </Button>
           <Button
             colorScheme="blue"
+            disabled={!showResult}
             onClick={() => {
               setRestart(true);
             }}

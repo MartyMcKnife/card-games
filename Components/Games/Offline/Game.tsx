@@ -40,21 +40,33 @@ export default function Game({
       setRunningTotal(runningTotal + results.gain);
       setBank(bank + results.gain);
       await updateBalance(uid, bank + results.gain);
-      let dat = [];
+      let dat: Array<{ name: string; Player: number; Dealer: number }> = [];
       //Generate the data for the graph
       results.winningHands.forEach((result) => {
-        if (result.winner === "P") {
-          const currentI = dat.findIndex(
-            (dataPoint) => dataPoint.name === result.hand
-          );
-          if (currentI > -1) {
-            const currentNo = dat[currentI].Wins;
-            dat[currentI] = { name: result.hand, Wins: currentNo + 1 };
-          } else {
-            dat.push({ name: result.hand, Wins: 1 });
-          }
+        //Work out who won
+        const winner = result.winner === "P" ? "Player" : "Dealer";
+        //Stupid implementation to not update the other data point because its late and im tired and cant think
+        const loser = result.winner === "D" ? "Player" : "Dealer";
+        //Check if we currently have a data point
+        const currentI = dat.findIndex(
+          (dataPoint) => dataPoint.name === result.hand
+        );
+        //If we do, update it
+        if (currentI > -1) {
+          const currentNo = dat[currentI][winner];
+          // @ts-ignore
+          dat[currentI] = {
+            name: result.hand,
+            [winner]: currentNo + 1,
+            [loser]: dat[currentI][loser],
+          };
+        } else {
+          //Create a data point
+          // @ts-ignore
+          dat.push({ name: result.hand, [winner]: 1, [loser]: 0 });
         }
       });
+      console.log(dat);
       //@ts-ignore
       setData(dat.sort((a, b) => a.name - b.name));
       setRun(false);
@@ -82,7 +94,7 @@ export default function Game({
             {data.length > 0 ? (
               <BarChart
                 data={data}
-                width={500}
+                width={600}
                 height={300}
                 key={Math.random()}
                 margin={{ top: 20 }}
@@ -90,7 +102,8 @@ export default function Game({
                 <XAxis dataKey="name" key={Math.random()} />
                 <YAxis />
                 <Tooltip />
-                <Bar dataKey="Wins" fill="#8884d8" />
+                <Bar dataKey="Player" stackId="a" fill="#53DD6C" />
+                <Bar dataKey="Dealer" stackId="a" fill="#63A088" />
               </BarChart>
             ) : (
               <VStack h="full" w="full" justifyContent="center">
