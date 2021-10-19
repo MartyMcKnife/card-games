@@ -94,7 +94,6 @@ export default function Poker({ user }: Props): ReactElement {
         if (nextI === players.length - 1) {
           nextI = 0;
         }
-        console.log(nextI, players[nextI]);
       }
       console.log(nextI, curI, players[curI], players[nextI]);
       //Set our next player!
@@ -177,7 +176,7 @@ export default function Poker({ user }: Props): ReactElement {
         .map((player, i) => {
           let result = Hand.solve(processHand([...player.cards, ...tCards]));
           //So we know whether the winner is the player, or AI
-          if (i === 0) {
+          if (player.name === "Player") {
             result.type = "P";
           } else {
             result.type = "D";

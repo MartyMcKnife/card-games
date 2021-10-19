@@ -166,12 +166,17 @@ export default function Blackjack({ user }: Props): ReactElement {
                 <HStack>
                   {dTurn ? (
                     dCards.map((card, i) => (
-                      <Card cardValue={card} key={card + i} />
+                      <Card
+                        cardValue={card}
+                        key={card + i}
+                        flip={true}
+                        backFirst={true}
+                      />
                     ))
                   ) : (
                     <>
                       <Card cardValue={dCards[0]} />{" "}
-                      <Card cardValue="gray_back" />
+                      <Card cardValue={dCards[1]} backFirst={true} />
                     </>
                   )}
                 </HStack>

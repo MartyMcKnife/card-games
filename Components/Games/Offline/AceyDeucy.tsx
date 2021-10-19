@@ -96,7 +96,7 @@ export default function AceyDeucy({ user }: Props): ReactElement {
           <Heading>Cards</Heading>
           <HStack pb="4">
             <Card cardValue={cards[0]} />
-            <Card cardValue={showThird ? cards[2] : "gray_back"} />
+            <Card cardValue={cards[2]} flip={showThird} backFirst={true} />
             <Card cardValue={cards[1]} />
           </HStack>
           <HStack alignItems="flex-end">
