@@ -5,17 +5,17 @@ import {
   nextPlayer,
   startGame,
   updateStart,
-} from "../../../utils/firebase/firestore";
+} from "../../../../utils/firebase/firestore";
 import { Button } from "@chakra-ui/button";
 import { Box, Flex, Heading, Text } from "@chakra-ui/layout";
 import { onSnapshot, DocumentData, doc } from "@firebase/firestore";
-import { Realtime, RPlayers, User } from "../../../interfaces/app";
-import { db } from "../../../utils/firebase/firebase-config";
+import { Realtime, RPlayers, User } from "../../../../interfaces/app";
+import { db } from "../../../../utils/firebase/firebase-config";
 
-import { useAuth } from "../../../utils/hooks";
-import FullPageLoading from "../../Helpers/FullPageLoading";
+import { useAuth } from "../../../../utils/hooks";
+import FullPageLoading from "../../../Helpers/FullPageLoading";
 import useAsyncEffect from "use-async-effect";
-import Seat from "../Online/Seat";
+import Seat from "../Seat";
 import { calc } from "@chakra-ui/styled-system";
 // import { calcBal } from "../../Landing";
 

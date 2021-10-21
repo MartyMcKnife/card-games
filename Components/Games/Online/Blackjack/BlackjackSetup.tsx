@@ -1,7 +1,7 @@
 import React, { ReactElement } from "react";
 
-import { useAuth } from "../../../utils/hooks";
-import FullPageLoading from "../../Helpers/FullPageLoading";
+import { useAuth } from "../../../../utils/hooks";
+import FullPageLoading from "../../../Helpers/FullPageLoading";
 import Blackjack from "./Blackjack";
 
 interface Props {
