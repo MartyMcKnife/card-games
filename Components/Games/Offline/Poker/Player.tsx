@@ -102,8 +102,8 @@ export default function Player({
     <VStack>
       <Heading fontSize="2xl">{player.name || "Player"}'s Cards</Heading>
       <HStack>
-        <Card cardValue={player.reveal ? player.cards[0] : "gray_back"} />
-        <Card cardValue={player.reveal ? player.cards[1] : "gray_back"} />
+        {/* <Card cardValue={player.reveal ? player.cards[0] : "gray_back"} />
+        <Card cardValue={player.reveal ? player.cards[1] : "gray_back"} /> */}
       </HStack>
       <HStack>
         <Heading fontSize="lg">Bet:</Heading>

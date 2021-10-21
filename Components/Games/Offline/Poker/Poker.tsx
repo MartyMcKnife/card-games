@@ -282,7 +282,7 @@ export default function Poker({ user }: Props): ReactElement {
           <HStack spacing="12px" my="8">
             {table.map((card, i) => {
               return (
-                <Card cardValue={card.show ? card.card : "red_back"} key={i} />
+                // <Card cardValue={card.show ? card.card : "red_back"} key={i} />
               );
             })}
           </HStack>
