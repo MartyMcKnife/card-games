@@ -13,6 +13,12 @@ export default function Coin({ coin, height }: Props): ReactElement {
     { name: "Tails", photo: "/coins/T.png" },
   ];
   const winnerPos = coin === "H" ? 0 : 1;
-
-  return <FlipCoin options={coins} winner={winnerPos} />;
+  return (
+    <Image
+      src={`/coins/${coin}.png`}
+      alt={coin}
+      height={height || "36"}
+      maxWidth="full"
+    />
+  );
 }
