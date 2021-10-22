@@ -94,7 +94,7 @@ export default function Blackjack({ user }: Props): ReactElement {
       //If we have an ace high, we can use this to calculate it - it'll just be 10 more, if the ace is treated as 1
       let dHighVal = dAceCheck ? dVal + 10 : dVal;
       //Loop until dealer's cards are below 17
-      while (dHighVal < 17 || dVal < 17) {
+      while (dVal < 17) {
         dHand = [...dHand, ...dealCards(1)];
         dVal = getValue(dHand, true, 10) as number;
         dAceCheck = (getValue(dHand, null, 10) as number[]).includes(1);
@@ -111,19 +111,23 @@ export default function Blackjack({ user }: Props): ReactElement {
       let bet = -betAmount;
       let winner = "D";
       let winningHand = dHand;
-      //Check if won
-      if (
-        //Dealer busted
-        dVal > 21 ||
-        //Player value higher
-        getMax([pVal, pHighVal], 21) > getMax([dVal, dHighVal], 21) ||
-        //Player has less cards
-        pCards.length < dHand.length
-      ) {
-        bet = betAmount;
-        winner = "P";
-        winningHand = pCards;
+      //Check if haven't busted
+      if (pVal <= 21) {
+        //Check if won
+        if (
+          //Dealer busted
+          dVal > 21 ||
+          //Player value higher
+          getMax([pVal, pHighVal], 21) > getMax([dVal, dHighVal], 21) ||
+          //Player has less cards
+          pCards.length < dHand.length
+        ) {
+          bet = betAmount;
+          winner = "P";
+          winningHand = pCards;
+        }
       }
+
       setRunningTotal(runningTotal + bet);
       setBank(bank + bet);
       setRunningResults([
