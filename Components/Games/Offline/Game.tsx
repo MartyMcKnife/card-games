@@ -102,8 +102,8 @@ export default function Game({
                 <XAxis dataKey="name" key={Math.random()} />
                 <YAxis />
                 <Tooltip />
-                <Bar dataKey="Player" stackId="a" fill="#53DD6C" />
-                <Bar dataKey="Dealer" stackId="a" fill="#63A088" />
+                <Bar dataKey="Player" stackId="a" fill="#2EC0F9" />
+                <Bar dataKey="Dealer" stackId="a" fill="#67AAF9" />
               </BarChart>
             ) : (
               <VStack h="full" w="full" justifyContent="center">
